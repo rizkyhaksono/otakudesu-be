@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from 'next/server'
 import otakudesu from '@/otakudesu';
 
-export async function GET(request: Request) {
+export async function GET() {
   try {
     const data = await otakudesu.home();
     return NextResponse.json({ data: data }, { status: 200 })
