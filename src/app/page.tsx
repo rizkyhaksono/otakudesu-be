@@ -14,7 +14,7 @@ export default function Home() {
               Otakudesu API 1.0 is out!
             </p>
             <div className="hover:text-neutral-400 transition duration-300 ease-in-out">
-              <Link href="https://otakudesu-docs.vercel.app/docs/intro">
+              <Link href="/api">
                 <Code className="mt-5" size="lg">
                   Get Started
                 </Code>

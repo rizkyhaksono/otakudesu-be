@@ -6,11 +6,11 @@ export const siteConfig = {
 	headerItems: [
 		{
 			label: "Docs",
-			href: "https://otakudesu-docs.vercel.app/docs/intro",
+			href: "https://otakudesudocs.natee.my.id/",
 		},
     {
-      label: "GitHub",
-      href: "https://github.com/rizkyhaksono",
+      label: "Repo",
+      href: "https://github.com/rizkyhaksono/otakudesu-be",
     },
 	],
 	footerItems: [
