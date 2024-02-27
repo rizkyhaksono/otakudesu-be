@@ -1,55 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api",
-      "schedule": "0 0 * * *"
-    },
-    {
       "path": "/api/home",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/anime",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/anime/[slug]/episodes/[episode]",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/complete-anime",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/complete-anime/[page]",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/episode",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/episode/[slug]",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/genre",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/genre/[slug]",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/ongoing-anime",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/ongoing-anime/[id]",
-      "schedule": "0 0 * * *"
-    },
-    {
-      "path": "/api/search",
       "schedule": "0 0 * * *"
     },
     {
