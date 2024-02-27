@@ -49,10 +49,6 @@
       "schedule": "0 0 * * *"
     },
     {
-      "path": "/api/complete-anime",
-      "schedule": "0 0 * * *"
-    },
-    {
       "path": "/api/search",
       "schedule": "0 0 * * *"
     },
