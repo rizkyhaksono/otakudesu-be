@@ -1,15 +1,24 @@
-name: Daily Build
+name: Fetch Data Daily
 
 on:
   schedule:
-    # Runs at 9am every day
-    - cron: '0 0 * * *'
-  workflow_dispatch:
+    - cron: "0 0 * * *"
 
 jobs:
-  build:
+  change_readme:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Send greeting
-      run: echo "Hello ${{ github.event.inputs.name }}"
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update Readme
+        run: |
+          echo "Last updated: $(date -u)" >> readme.md
+
+          git config --global user.email "actions@github.com"
+          git config --global user.name "GitHub Actions"
+
+          git add readme.md
+          git commit -m "Update readme with timestamp" || true
+          git push
