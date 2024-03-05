@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-[![Fetch Anime Every 12 Hours](https://github.com/otakudesu-be/actions/workflows/fetch.yml/badge.svg)](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/fetch.yml)
+[![Fetch Anime Every 12 Hours](https://github.com/otakudesu-be/actions/workflows/fetch.yml/badge.svg)](https://github.com/otakudesu-be/actions/workflows/fetch.yml)
 
 First, run the development server:
 
