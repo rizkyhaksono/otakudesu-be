@@ -2,7 +2,7 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 ## Getting Started
 
-[![Fetch Data Daily](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/manual.yml/badge.svg?branch=main)](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/manual.yml)
+[![Fetch Data Daily](https://github.com/otakudesu-be/actions/workflows/manual.yml/badge.svg?branch=main)](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/manual.yml)
 
 First, run the development server:
 
