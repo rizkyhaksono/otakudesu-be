@@ -2,7 +2,7 @@ name: Fetch Data Daily
 
 on:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 */12 * * *"
 
 jobs:
   update_templates:
