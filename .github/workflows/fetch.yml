@@ -7,32 +7,30 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout code
+      uses: actions/checkout@v4
       with:
         persist-credentials: false
         fetch-depth: 0
-    - name: Increment build number
-      id: increment
-      uses: actions/github-script@v5
-      with:
-        script: |
-          currentVersion=$(grep -oP 'Build number: \K\d+' README.md)
-          newVersion=$((currentVersion + 1))
-          echo "Build number: $newVersion" > README.md
-          echo "::set-output name=newVersion::$newVersion"
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Commit files
-      if: "!contains(github.event.head_commit.message, 'Automate action')"
+
+    - name: Increment Build Action On README.md
       run: |
-        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-        git config --local user.name "github-actions[bot]"
-        git add README.md
-        git commit -m "Increment build number to ${{ steps.increment.outputs.newVersion }}"
-    - name: Push changes
-      if: "!contains(github.event.head_commit.message, 'Automate action')"
-      uses: ad-m/github-push-action@master
-      with:
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        branch: ${{ github.ref }}
+        # Increment the build in README.md
+        current_build=$(grep -oP '(?<=Build: )\d+' README.md)
+        new_build=$((current_build + 1))
+        sed -i "s/Build: $current_build/Build: $new_build/" README.md
+        echo "Build number is now: $new_build" >> README.md
+
+    - name: Commit and push (if changed)
+      run: |
+        if [ -n "$(git status --porcelain)" ]; then
+          git config --global user.email "actions@users.noreply.github.com"
+          git config --global user.name "README-bot"
+          git add -u
+          git commit -m "Increment build to $new_build"
+          git push
+        else
+          echo "No changes to commit."
+        fi
