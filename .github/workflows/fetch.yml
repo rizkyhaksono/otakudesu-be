@@ -8,7 +8,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v5
       with:
         persist-credentials: false
         fetch-depth: 0
@@ -17,16 +17,10 @@ jobs:
       uses: actions/github-script@v5
       with:
         script: |
-          const fs = require('fs');
-          const path = require('path');
-          const packageJsonPath = path.join(process.cwd(), 'package.json');
-          const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
-          const currentVersion = packageJson.version;
-          const [major, minor, patch, build] = currentVersion.split('.');
-          const newBuild = parseInt(build, 10) + 1;
-          packageJson.version = `${major}.${minor}.${patch}.${newBuild}`;
-          fs.writeFileSync(packageJsonPath, JSON.stringify(packageJson, null, 2));
-          core.setOutput('newVersion', packageJson.version);
+          currentVersion=$(grep -oP 'Build number: \K\d+' README.md)
+          newVersion=$((currentVersion + 1))
+          echo "Build number: $newVersion" > README.md
+          echo "::set-output name=newVersion::$newVersion"
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     - name: Commit files
@@ -34,7 +28,8 @@ jobs:
       run: |
         git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
         git config --local user.name "github-actions[bot]"
-        git commit -a -m "Increment build number to ${{ steps.increment.outputs.newVersion }}"
+        git add README.md
+        git commit -m "Increment build number to ${{ steps.increment.outputs.newVersion }}"
     - name: Push changes
       if: "!contains(github.event.head_commit.message, 'Automate action')"
       uses: ad-m/github-push-action@master
