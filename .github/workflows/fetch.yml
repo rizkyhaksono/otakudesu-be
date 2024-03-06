@@ -17,12 +17,12 @@ jobs:
 
     - name: Increment Build Action On README.md
       run: |
-        # Increment the build in README.md
-        current_build=$(grep -oP '(?<=Build: )\d+' README.md)
-        new_build=$((current_build + 1))
-        sed -i "s/Build: $current_build/Build: $new_build/" README.md
-        echo "Build number is now: $new_build" >> README.md
-
+      cat README.md
+      current_build=$(grep -oP '(?<=Build: )\d+' README.md)
+      new_build=$((current_build + 1))
+      sed -i "s/Build: $current_build/Build: $new_build/" README.md
+      echo "Build number is now: $new_build" >> README.md
+    
     - name: Commit and push (if changed)
       run: |
         if [ -n "$(git status --porcelain)" ]; then
