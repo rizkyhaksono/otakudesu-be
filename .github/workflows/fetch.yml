@@ -14,7 +14,7 @@ jobs:
         
       - name: Update README.md
         run: |
-          sed -i 's|https://github.com/rizkyhaksono/otakudesu-be|' README.md
+          sed -i 's|https://github.com/rizkyhaksono/otakudesu-be/|https://github.com/rizkyhaksono/${{ github.event.repository.name }}/|' README.md
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config user.name "github-actions[bot]"
           git commit -am "Automated report"
@@ -31,7 +31,7 @@ jobs:
       with:
         token: ${{ secrets.README_TEMPLATE_TOKEN }}
         template: TEMPLATE.md
-        output: README.md
+        output: README.txt
     - name: Update README.md
       run: |
         if [[ "$(git status --porcelain)" != "" ]]; then
