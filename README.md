@@ -4,6 +4,10 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 [![Fetch Anime Every 5 Minutes](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/fetch.yml/badge.svg)](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/fetch.yml)
 
+## Build Information
+
+Current Build Number: {{BUILD_NUMBER}}
+
 First, run the development server:
 
 ```bash
