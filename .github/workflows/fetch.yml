@@ -5,26 +5,20 @@ on:
     - cron: "*/5 * * * *"
 
 jobs:
-  update_templates:
-    name: "Update Templates"
+  build:
     runs-on: ubuntu-latest
     steps:
-      - name: "📥  Fetching Repository Contents"
-        uses: actions/checkout@main
-
-      # Runs a set of commands using the runners shell
-      - name: Update README.md
-        run: |
-          REPO_NAME=${{ github.repository }}
-          sed -i "s|https://github.com/rizkyhaksono/otakudesu-be/|https://github.com/${REPO_NAME}/|" README.md
-          
-          # Increment the count
-          CURRENT_COUNT=$(grep -oP 'Action runs: \K\d+' README.md)
-          NEW_COUNT=$((CURRENT_COUNT + 1))
-          sed -i "s|Action runs: ${CURRENT_COUNT}|Action runs: ${NEW_COUNT}|" README.md
-
-          # Commit changes
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git commit -am "Increment action run count and update repository URL"
-          git push
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+        fetch-depth: 0
+    - name: Commit files
+      run: |
+        git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+        git config --local user.name "github-actions[bot]"
+        git commit -a -m "Automate action"
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: ${{ github.ref }}
