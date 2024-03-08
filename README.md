@@ -7,8 +7,14 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### Latest YouTube videos
 
 <table>
-<!-- YOUTUBE-VIDEOS-LIST:START -->
-  
+<!-- YOUTUBE-VIDEOS-LIST:START --><tr><td><a href="https://www.youtube.com/watch?v=ZI7tSRR9q8w"><img width="140px" src="https://i.ytimg.com/vi/ZI7tSRR9q8w/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=ZI7tSRR9q8w">Reviewing your Open Source Repos + Profiles</a> (Mar 6, 2024)<br/></td></tr>
+<tr><td><a href="https://www.youtube.com/watch?v=diWUEgE3Hxo"><img width="140px" src="https://i.ytimg.com/vi/diWUEgE3Hxo/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=diWUEgE3Hxo">Get more GitHub repo Stars</a> (Mar 5, 2024)<br/></td></tr>
+<tr><td><a href="https://www.youtube.com/watch?v=BCzNtbEh5T4"><img width="140px" src="https://i.ytimg.com/vi/BCzNtbEh5T4/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=BCzNtbEh5T4">GitHub VERIFIED #github #git</a> (Mar 3, 2024)<br/></td></tr>
+<tr><td><a href="https://www.youtube.com/watch?v=to6zWf0BF-o"><img width="140px" src="https://i.ytimg.com/vi/to6zWf0BF-o/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=to6zWf0BF-o">STOP looking at Open Source GREEN squares</a> (Feb 29, 2024)<br/></td></tr>
 <!-- YOUTUBE-VIDEOS-LIST:END -->
 </table>
 
