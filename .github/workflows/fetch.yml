@@ -1,22 +1,23 @@
 name: Fetch Data Daily
 
 on:
+  push:
   schedule:
     - cron: "*/5 * * * *"
+  workflow_dispatch:
 
 jobs:
-  update_templates:
-    name: "Update Templates"
+  youtube:
+    name: latest videos from YouTube
     runs-on: ubuntu-latest
     steps:
-      - name: "📥  Fetching Repository Contents"
-        uses: actions/checkout@main
-
-      # Runs a set of commands using the runners shell
-      - name: Update README.md
-        run: |
-          sed -i 's|https://github.com/rizkyhaksono/otakudesu-be/|https://github.com/${{ github.event.repository.owner.login }}/otakudesu-be/|' README.md || true
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config user.name "github-actions[bot]"
-          git commit -am "Automated report"
-          git push
+      - uses: actions/checkout@v2
+      - uses: gautamkrishnar/blog-post-workflow@master
+        with:
+          comment_tag_name: "YOUTUBE-VIDEOS-LIST"
+          max_post_count: 4
+          feed_list: "https://www.youtube.com/feeds/videos.xml?channel_id=UC5mnBodB73bR88fLXHSfzYA"
+          custom_tags: "channelId/yt:channelId/,videoId/yt:videoId/"
+          date_format: "mmm d, yyyy"
+          template: '<tr><td><a href="$url"><img width="140px" src="https://i.ytimg.com/vi/$videoId/mqdefault.jpg"></a></td>$newline<td><a href="$url">$title</a> ($date)<br/>$description</td></tr>$newline'
+          description_max_length: 140
