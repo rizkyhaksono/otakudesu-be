@@ -18,10 +18,6 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 <!-- YOUTUBE-VIDEOS-LIST:END -->
 </table>
 
-## Build Information
-
-Current Build Number: {{BUILD_NUMBER}}
-
 First, run the development server:
 
 ```bash
