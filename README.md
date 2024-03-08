@@ -7,14 +7,14 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 ### Latest YouTube videos
 
 <table>
-<!-- YOUTUBE-VIDEOS-LIST:START --><tr><td><a href="https://www.youtube.com/watch?v=ZI7tSRR9q8w"><img width="140px" src="https://i.ytimg.com/vi/ZI7tSRR9q8w/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=ZI7tSRR9q8w">Reviewing your Open Source Repos + Profiles</a> (Mar 6, 2024)<br/></td></tr>
-<tr><td><a href="https://www.youtube.com/watch?v=diWUEgE3Hxo"><img width="140px" src="https://i.ytimg.com/vi/diWUEgE3Hxo/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=diWUEgE3Hxo">Get more GitHub repo Stars</a> (Mar 5, 2024)<br/></td></tr>
-<tr><td><a href="https://www.youtube.com/watch?v=BCzNtbEh5T4"><img width="140px" src="https://i.ytimg.com/vi/BCzNtbEh5T4/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=BCzNtbEh5T4">GitHub VERIFIED #github #git</a> (Mar 3, 2024)<br/></td></tr>
-<tr><td><a href="https://www.youtube.com/watch?v=to6zWf0BF-o"><img width="140px" src="https://i.ytimg.com/vi/to6zWf0BF-o/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=to6zWf0BF-o">STOP looking at Open Source GREEN squares</a> (Feb 29, 2024)<br/></td></tr>
+<!-- YOUTUBE-VIDEOS-LIST:START --><tr><td><a href="https://www.youtube.com/watch?v=wuoxlUPIJGo"><img width="140px" src="https://i.ytimg.com/vi/wuoxlUPIJGo/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=wuoxlUPIJGo">Valo sans duls</a> (Mar 29, 2023)<br/></td></tr>
+<tr><td><a href="https://www.youtube.com/watch?v=cDD0qTemBmw"><img width="140px" src="https://i.ytimg.com/vi/cDD0qTemBmw/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=cDD0qTemBmw">Valo sans duls</a> (Mar 28, 2023)<br/></td></tr>
+<tr><td><a href="https://www.youtube.com/watch?v=E1kgKemttbM"><img width="140px" src="https://i.ytimg.com/vi/E1kgKemttbM/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=E1kgKemttbM">Ngerjain tugas &lpar;mungkin&rpar;</a> (Oct 17, 2022)<br/></td></tr>
+<tr><td><a href="https://www.youtube.com/watch?v=l2OaDO_pFoM"><img width="140px" src="https://i.ytimg.com/vi/l2OaDO_pFoM/mqdefault.jpg"></a></td>
+<td><a href="https://www.youtube.com/watch?v=l2OaDO_pFoM">Test streaming pake saweria</a> (Oct 14, 2022)<br/></td></tr>
 <!-- YOUTUBE-VIDEOS-LIST:END -->
 </table>
 
