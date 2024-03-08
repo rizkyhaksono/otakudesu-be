@@ -1,9 +1,9 @@
-name: Cat Nyaw
+name: Nyaw
 on:
   push:
   workflow_dispatch:
   schedule:
-    - cron: "*/5 * * * *"
+    - cron: "0 */12 * * *"
 jobs:
   build:
     runs-on: ubuntu-latest
