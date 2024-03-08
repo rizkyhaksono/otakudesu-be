@@ -4,6 +4,14 @@ This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next
 
 [![Fetch Anime Every 5 Minutes](https://github.com/otakudesu-be/actions/workflows/fetch.yml/badge.svg)](https://github.com/otakudesu-be/actions/workflows/fetch.yml)
 
+### Latest YouTube videos
+
+<table>
+<!-- YOUTUBE-VIDEOS-LIST:START -->
+  
+<!-- YOUTUBE-VIDEOS-LIST:END -->
+</table>
+
 ## Build Information
 
 Current Build Number: {{BUILD_NUMBER}}
