@@ -1,0 +1,29 @@
+name: Weather Local Area
+
+on:
+  workflow_dispatch:
+  schedule:
+     - cron: "*/5 * * * *"
+
+jobs:
+  update_blogs:
+    name: "Update Blogs"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "📥 Fetching Repository Contents"
+        uses: actions/checkout@main
+        
+      - name: "🌨️ Fetching Weather Forecast"
+        uses: ./
+        with:
+          GITHUB_TOKEN: ${{secrets.GH_TOKEN}}
+          OPEN_WEATHER_TOKEN: ${{secrets.OPEN_WEATHER_TOKEN}}
+          CITY: "Yogyakarta, Indonesia"
+
+      - name: 🛠️ Update README
+        run: |
+          echo "Last Updated: $(date)" >> README.md
+
+          git config --global user.email readme-bot@example.com
+          git config --global user.name readme-bot
+          git diff --quiet && git diff --staged --quiet || git commit -am '[BOT] Update Readme' && git push
