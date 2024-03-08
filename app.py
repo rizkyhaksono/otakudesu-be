@@ -4,8 +4,8 @@ from datetime import datetime
 import requests
 
 PROJECT_ROOT = pathlib.Path(__file__).parent.resolve()
-TITLE = '# READMEOW\n'
-DESC = f'{TITLE}\nA self-rewriting README powered by GitHub Actions to display cat gifs.\n\n'
+TITLE = '# Otakudesu Backend\n'
+DESC = f'{TITLE}\nAutomated README powered by GitHub Actions to dynamically display cat gifs.\n\n Update every 12 hours\n\n'
 # giphy params
 URL = f'https://api.giphy.com/v1/gifs/search'
 SEARCH_LIMIT = 1
