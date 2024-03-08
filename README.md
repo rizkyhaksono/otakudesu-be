@@ -1,6 +1,8 @@
-# READMEOW
+# Otakudesu Backend
 
-A self-rewriting README powered by GitHub Actions to display cat gifs.
+Automated README powered by GitHub Actions to dynamically display cat gifs.
+
+ Update every 12 hours
 
 ## Cats
 
