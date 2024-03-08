@@ -1,52 +1,66 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<!-- README template, populated using this action:
+     https://github.com/kip93/kip93/blob/main/.github/workflows/readme.yml. -->
 
-## Getting Started
+<h1 align="center">👋 Hello world! I'm @rizkyhaksono</h1> <!-- LOGIN => username -->
 
-[![Fetch Anime Every 5 Minutes](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/main.yml/badge.svg)](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/main.yml)
+### 👤 About me
 
-### Latest YouTube videos
+I am a passionate self-taught backend software developer, and a strong advocate for libre software.
 
-<table>
-<!-- YOUTUBE-VIDEOS-LIST:START --><tr><td><a href="https://www.youtube.com/watch?v=wuoxlUPIJGo"><img width="140px" src="https://i.ytimg.com/vi/wuoxlUPIJGo/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=wuoxlUPIJGo">Valo sans duls</a> (Mar 29, 2023)<br/></td></tr>
-<tr><td><a href="https://www.youtube.com/watch?v=cDD0qTemBmw"><img width="140px" src="https://i.ytimg.com/vi/cDD0qTemBmw/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=cDD0qTemBmw">Valo sans duls</a> (Mar 28, 2023)<br/></td></tr>
-<tr><td><a href="https://www.youtube.com/watch?v=E1kgKemttbM"><img width="140px" src="https://i.ytimg.com/vi/E1kgKemttbM/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=E1kgKemttbM">Ngerjain tugas &lpar;mungkin&rpar;</a> (Oct 17, 2022)<br/></td></tr>
-<tr><td><a href="https://www.youtube.com/watch?v=l2OaDO_pFoM"><img width="140px" src="https://i.ytimg.com/vi/l2OaDO_pFoM/mqdefault.jpg"></a></td>
-<td><a href="https://www.youtube.com/watch?v=l2OaDO_pFoM">Test streaming pake saweria</a> (Oct 14, 2022)<br/></td></tr>
-<!-- YOUTUBE-VIDEOS-LIST:END -->
-</table>
 
-First, run the development server:
+### 💬 Some facts
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+* 📅 Coding since 2013.
+* 💼 Currently working @ [OroraTech](https://ororatech.com/).
+* 👨‍💻 [Python](https://github.com/search?q=user%3Arizkyhaksono&l=python) is ❤️. <!-- LOGIN => username -->
+* 💻 [NixOS](https://github.com/NixOS/) /
+     [Awesome](https://github.com/awesomeWM/) /
+     [kitty](https://github.com/kovidgoyal/kitty/) /
+     [xonsh](https://github.com/xonsh/).
+* 🌐 I have a [portfolio website](https://kip93.net/) with some more information.
+* 📝 Checkout my [résumé](https://kip93.net/resume/) for even more detail.
+* 📫 Reach me @ [leandro@kip93.net](mailto:leandro@kip93.net).
+* 🎲 Fun fact: My first program was not a "Hello World" (it was simple R/W in an [HC11 µC](https://en.wikipedia.org/wiki/68HC11) emulator).
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+-----------------------------------------------------------------------------------------------------------------------
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
 
-## Learn More
+### 📈 Stats
 
-To learn more about Next.js, take a look at the following resources:
+![](./stats.svg)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+### 📚 Most used languages <!-- by percentage, in decreasing order -->
 
-## Deploy on Vercel
+![](./languages.svg)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### 🏅 Achievements
+
+![](./achievements.svg)
+
+
+<details> <!-- Last activity -->
+<!-- Almost verbatim copy of https://github.com/lowlighter/metrics/blob/latest/source/templates/markdown/partials/activity.ejs, but restructured to be foldable. -->
+<summary><h3>📰 Recent activity</h3></summary>
+
+* ➡️ Pushed 1 commit in [rizkyhaksono/otakudesu-be](https://github.com/rizkyhaksono/otakudesu-be) on branch `main`
+  * [#3dde338](https://github.com/rizkyhaksono/otakudesu-be/commit/3dde338) Update main.yml
+  * *On 8 Mar 2024, 03:57:26*
+* ➡️ Pushed 1 commit in [rizkyhaksono/otakudesu-be](https://github.com/rizkyhaksono/otakudesu-be) on branch `main`
+  * [#869acd8](https://github.com/rizkyhaksono/otakudesu-be/commit/869acd8) Update README.md
+  * *On 8 Mar 2024, 03:09:06*
+* ➡️ Pushed 1 commit in [rizkyhaksono/otakudesu-be](https://github.com/rizkyhaksono/otakudesu-be) on branch `main`
+  * [#a083aa9](https://github.com/rizkyhaksono/otakudesu-be/commit/a083aa9) Update and rename fetch.yml to main.yml
+  * *On 8 Mar 2024, 03:08:46*
+* ➡️ Pushed 1 commit in [rizkyhaksono/otakudesu-be](https://github.com/rizkyhaksono/otakudesu-be) on branch `main`
+  * [#e25967f](https://github.com/rizkyhaksono/otakudesu-be/commit/e25967f) Update README.md
+  * *On 8 Mar 2024, 03:04:44*
+</details>
+
+
+<h6 align="right"><em>
+    Generated with <a href="https://github.com/lowlighter/metrics/tree/latest/">lowlighter/metrics v3.34.0</a> 🛠️<br> <!-- VERSION => MAJOR.minor.patch -->
+    Last updated @ 8 Mar 2024, 06:27:34 / All times UTC ⌚ <!-- meta.generated => DD/MM/YYYY, hh:mm -->
+</em></h6>
