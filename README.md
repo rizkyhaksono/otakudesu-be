@@ -6,4 +6,4 @@ Automated README powered by GitHub Actions to dynamically display cat gifs.
 
 ## Cats
 
-![cat smoking GIF by sheepfilms](https://media0.giphy.com/media/l0ExdMHUDKteztyfe/200.gif?cid=9acd02dao8ltm8dna3s8h7gztu10x3omtzz7prblirbczkq3&ep=v1_gifs_search&rid=200.gif&ct=g)
+![cat smoking GIF by sheepfilms](https://media0.giphy.com/media/l0ExdMHUDKteztyfe/200.gif?cid=9acd02dal5vaglo1j027csfq93914auze0vtfyovi3wp9emw&ep=v1_gifs_search&rid=200.gif&ct=g)
