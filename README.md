@@ -6,4 +6,4 @@ Automated README powered by GitHub Actions to dynamically display cat gifs.
 
 ## Cats
 
-![Bored Cat GIF](https://media3.giphy.com/media/mlvseq9yvZhba/200.gif?cid=9acd02daffwdg56tgz4us15gub3gf0r921y6sonbue5uuzrt&ep=v1_gifs_search&rid=200.gif&ct=g)
+![Cat Kitten GIF by Demic](https://media2.giphy.com/media/3oriO0OEd9QIDdllqo/200.gif?cid=9acd02da3bz97d19d3z7tzxc1yz8r3d80sd0atclhai8ppbp&ep=v1_gifs_search&rid=200.gif&ct=g)
