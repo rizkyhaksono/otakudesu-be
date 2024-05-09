@@ -1,8 +1,7 @@
 # Otakudesu Backend
 
 Automated README powered by GitHub Actions to dynamically display cat gifs.
-
- Update every 12 hours
+Update every 12 hours
 
 ## Cats
 
