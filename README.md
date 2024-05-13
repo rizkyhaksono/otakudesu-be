@@ -1,9 +1,27 @@
-# Otakudesu Backend
+# Otakudesu Backend API Scaper
 
-Automated README powered by GitHub Actions to dynamically display cat gifs.
+This is a simple API scaper for Otakudesu website. This API scaper is used to get the latest anime list from Otakudesu website.
 
- Update every 12 hours
+<strong>PS: This project is for educational purposes only. Use it at your own risk.</strong>
 
-## Cats
+## Installation
 
-![Cat Kitten GIF by Demic](https://media0.giphy.com/media/3oriO0OEd9QIDdllqo/200.gif?cid=9acd02dad1tziosradsfto0veazs10terajx3f3rnze3v9zi&ep=v1_gifs_search&rid=200.gif&ct=g)
+Copy the `.env.example` file to `.env` and set the BASEURL to the Otakudesu website. Then run the following command to install the dependencies.
+
+```bash
+npm install
+```
+
+## Running
+
+```bash
+npm run start
+```
+
+## License
+
+[MIT License](./LICENSE)
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
