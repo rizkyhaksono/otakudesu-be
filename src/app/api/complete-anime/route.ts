@@ -1,6 +1,6 @@
 import { NextResponse, NextRequest } from "next/server"
 
-export async function GET(respose: NextResponse, request: NextRequest) {
+export async function GET() {
   try {
     return NextResponse.json({ data: "You have to add [:page]" }, { status: 404 })
   } catch (error) {

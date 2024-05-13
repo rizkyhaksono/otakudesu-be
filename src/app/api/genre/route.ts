@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server"
 import otakudesu from "@/otakudesu"
 import { revalidatePath } from "next/cache"
 
-export async function GET(response: NextResponse, request: NextRequest) {
+export async function GET() {
   try {
     const data = await otakudesu.genreLists()
     revalidatePath("/api/genre", "page")

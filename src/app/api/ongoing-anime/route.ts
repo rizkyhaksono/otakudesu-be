@@ -1,7 +1,7 @@
 import { NextResponse, NextRequest } from "next/server"
 import otakudesu from "@/otakudesu"
 
-export async function GET(response: NextResponse, request: NextRequest) {
+export async function GET() {
   try {
     const data = await otakudesu.ongoingAnime()
     return NextResponse.json({ data: data }, { status: 200 })
