@@ -1,11 +1,13 @@
-import { NextResponse, NextRequest } from 'next/server'
-import otakudesu from '@/otakudesu';
+import { NextResponse, NextRequest } from "next/server"
+import otakudesu from "@/otakudesu"
+import { revalidatePath } from "next/cache"
 
-export async function GET() {
+export async function GET(response: NextResponse, request: NextRequest) {
   try {
-    const data = await otakudesu.genreLists();
+    const data = await otakudesu.genreLists()
+    revalidatePath("/api/genre", "page")
     return NextResponse.json({ data: data }, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 })
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }
 }

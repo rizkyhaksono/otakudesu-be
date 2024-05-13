@@ -1,18 +1,8 @@
 import { NextResponse, NextRequest } from "next/server"
 
-export async function GET() {
+export async function GET(response: NextResponse, request: NextRequest) {
   try {
-    return NextResponse.json(
-      { data: "You need to add [:slug]" },
-      {
-        status: 404,
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-          "Access-Control-Allow-Methods": "GET, POST, PUT, DELETE, OPTIONS",
-          "Access-Control-Allow-Headers": "Content-Type, Authorization",
-        },
-      }
-    )
+    return NextResponse.json({ data: "You need to add [:slug]" }, { status: 404 })
   } catch (error) {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
   }

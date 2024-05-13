@@ -7,4 +7,4 @@ export const OtakudesuLogo = () => (
       fillRule="evenodd"
     />
   </svg>
-);
+)
