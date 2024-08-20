@@ -116,4 +116,12 @@ type batch = {
   }[]
 }
 
-export type { anime, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch }
+interface scheduleByDay {
+  day: string;
+  anime_list: {
+    anime_name: string;
+    url: string;
+  }[];
+}
+
+export type { anime, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch, scheduleByDay }

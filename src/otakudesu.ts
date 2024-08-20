@@ -8,6 +8,7 @@ import completeAnime from './utils/completeAnime';
 import batch from './utils/batch';
 import genreLists from './utils/genreLists';
 import animeByGenre from './utils/animeByGenre';
+import schedule from './utils/schedulte';
 
 const otakudesu = {
   home,
@@ -19,7 +20,8 @@ const otakudesu = {
   completeAnime,
   batch,
   genreLists,
-  animeByGenre
+  animeByGenre,
+  schedule,
 };
 
 export default otakudesu;
