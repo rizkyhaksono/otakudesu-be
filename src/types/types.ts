@@ -121,6 +121,7 @@ interface scheduleByDay {
   anime_list: {
     anime_name: string;
     url: string;
+    slug: string;
   }[];
 }
 
