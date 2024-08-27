@@ -1,4 +1,4 @@
-# Otakudesu Backend API Scaper
+# Otakudesu API Scaper
 
 # NOTE: This project is no longer maintained. The website has cloudflare protection and the scaper is not working anymore.
 
