@@ -1,7 +1,5 @@
 # Otakudesu API Scaper
 
-# NOTE: This project is no longer maintained. The website has cloudflare protection and the scaper is not working anymore.
-
 This is a simple API scaper for Otakudesu website. This API scaper is used to get the latest anime list from Otakudesu website.
 
 <strong>PS: This project is for educational purposes only. Use it at your own risk.</strong>
