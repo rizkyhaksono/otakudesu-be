@@ -8,6 +8,6 @@ export async function GET() {
     revalidatePath("/api/home", "page")
     return NextResponse.json({ data: data }, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
+    return NextResponse.json({ error: error }, { status: 500 })
   }
 }
