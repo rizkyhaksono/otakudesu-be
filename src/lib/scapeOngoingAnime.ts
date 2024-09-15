@@ -10,6 +10,8 @@ const scrapeOngoingAnime = (html: string): ongoingAnime[] => {
   animes.forEach(anime => {
     const $ = load(anime);
 
+    console.log($('.detpost .thumb .thumbz .jdlflm').text());
+
     result.push({
       title: $('.detpost .thumb .thumbz .jdlflm').text(),
       slug: $('.detpost .thumb a').attr('href')?.replace(/^https:\/\/otakudesu\.[a-zA-Z0-9-]+\/anime\//, '').replace('/', ''),
