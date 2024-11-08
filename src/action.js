@@ -28,11 +28,10 @@ ${before}
 ${input}
 ${after}`;
   fs.writeFileSync(FILE_NAME, edited.trim());
-  console.log(edited);
 }
 
 try {
   run();
 } catch (error) {
-  console.log(error);
+  core.setFailed(error.message);
 }
