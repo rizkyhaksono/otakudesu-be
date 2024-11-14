@@ -65,7 +65,7 @@ type genre = {
 
 type episode_list = {
   episode: string | undefined
-  episode_number: string | undefined
+  episode_number: number | undefined
   slug: string | undefined
   otakudesu_url: string | undefined
 }

@@ -19,12 +19,13 @@ const scrapeAnimeEpisodes = (html: string): episode_list[] | undefined => {
     const titleText = $('li span:first a')?.text();
 
     const episodeNumber = titleText
-      ?.replace(/^One Piece Episode\s+/, '')
-      .replace(/\s+Subtitle Indonesia$/, '');
+      ?.replace(/^.*Episode\s+/, '')
+      .replace(/\D.*$/, '')
+      .trim();
 
     result.unshift({
       episode: titleText,
-      episode_number: episodeNumber,
+      episode_number: episodeNumber ? parseInt(episodeNumber, 10) : undefined,
       slug: $('li span:first a')?.attr('href')?.replace(/^https:\/\/otakudesu\.[a-zA-Z0-9-]+\/episode\//, '').replace('/', ''),
       otakudesu_url: $('li span:first a')?.attr('href')
     });
