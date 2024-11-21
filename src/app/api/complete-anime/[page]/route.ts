@@ -1,7 +1,8 @@
 import { NextResponse, NextRequest } from "next/server"
 import otakudesu from "@/otakudesu"
 
-export async function GET(request: NextRequest, { params }: { params: { page: number } }) {
+export async function GET(request: NextRequest, props: { params: Promise<{ page: number }> }) {
+  const params = await props.params;
   try {
     const data = await otakudesu.completeAnime(params.page)
     return NextResponse.json({ data: data }, { status: 200 })
