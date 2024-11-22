@@ -1,5 +1,7 @@
+"use client"
+
 import Image from "next/image"
-import BaseLayout from "@/components/BaseLayout"
+// import BaseLayout from "@/components/BaseLayout"
 import { Code, Link } from "@nextui-org/react"
 
 export default function Home() {

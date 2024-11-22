@@ -10,15 +10,14 @@ const scrapeEpisode = (html: string): episodeType | undefined => {
   const previous_episode = getPrevEpisode($);
   const next_episode = getNextEpisode($);
   const anime = getAnimeData($);
-  
   if (!episode) return undefined;
 
   return {
     episode,
     anime,
-    has_next_episode: next_episode ? true : false,
+    has_next_episode: !!next_episode,
     next_episode,
-    has_previous_episode: previous_episode ? true : false,
+    has_previous_episode: !!previous_episode,
     previous_episode,
     stream_url,
     download_urls,
@@ -67,7 +66,7 @@ const getMp4DownloadUrls = ($: CheerioAPI) => {
       });
     }
     result.push({
-      resolution: $('strong').text()?.replace(/([A-z][A-z][0-9] )/, ''),
+      resolution: $('strong').text()?.replace(/([A-z][A-z]\d )/, ''),
       urls,
     });
   }
@@ -109,22 +108,33 @@ const getMkvDownloadUrls = ($: CheerioAPI) => {
 };
 
 const getPrevEpisode = ($: CheerioAPI) => {
-  if (!$('.flir a:first').attr('href')?.startsWith(`${BASEURL}/episode/`)) return null;
+  const prevEpisodeLink = $('.flir a[title="Episode Sebelumnya"]').attr('href');
 
-  return {
-    slug: $('.flir a:first').attr('href')?.replace(/^https:\/\/otakudesu\.[a-zA-Z0-9-]+\/episode\//, '')?.replace('/', ''),
-    otakudesu_url: $('.flir a:first').attr('href'),
-  };
+  if (prevEpisodeLink?.includes('/episode/')) {
+    return {
+      slug: prevEpisodeLink.replace(/^https:\/\/otakudesu\.[a-zA-Z0-9-]+\/episode\//, '').replace('/', ''),
+      otakudesu_url: prevEpisodeLink,
+    };
+  } else {
+    return null;
+  }
 };
 
 const getNextEpisode = ($: CheerioAPI) => {
-  if (!$('.flir a:last').attr('href')?.startsWith(`${BASEURL}/episode/`)) return null;
+  const nextEpisodeLink = $('.flir a[title="Episode Selanjutnya"]').attr('href');
 
-  return {
-    slug: $('.flir a:last').attr('href')?.replace(`${BASEURL}/episode/`, '')?.replace('/', ''),
-    otakudesu_url: $('.flir a:last').attr('href'),
-  };
+  if (nextEpisodeLink?.includes('/episode/')) {
+    return {
+      slug: nextEpisodeLink
+        .replace(/^https:\/\/otakudesu\.[a-zA-Z0-9-]+\/episode\//, '')
+        .replace(/\/$/, ''),
+      otakudesu_url: nextEpisodeLink,
+    };
+  } else {
+    return null;
+  }
 };
+
 
 const getAnimeData = ($: CheerioAPI) => {
   if ($('.flir a:nth-child(3)').text().trim() === '' || $('.flir a:nth-child(3)').text() === undefined) {
@@ -133,9 +143,9 @@ const getAnimeData = ($: CheerioAPI) => {
       otakudesu_url: $('.flir a:first').attr('href'),
     };
   }
-
+  const animeUrl = $('.flir a:nth-child(2)').attr('href');
   return {
-    slug: $('.flir a:nth-child(2)').attr('href')?.replace(`${BASEURL}/anime/`, '')?.replace('/', ''),
+    slug: animeUrl?.split('/').slice(4).join('/'),
     otakudesu_url: $('.flir a:nth-child(2)').attr('href'),
   };
 };
