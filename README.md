@@ -25,3 +25,5 @@ npm run start
 ## Contributing
 
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+
+[![Star History Chart](https://api.star-history.com/svg?repos=rizkyhaksono/otakudesu-be&type=Date)](https://star-history.com/#rizkyhaksono/otakudesu-be&Date)
