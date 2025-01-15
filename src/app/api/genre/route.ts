@@ -1,13 +1,7 @@
 import { NextResponse, NextRequest } from "next/server"
-import otakudesu from "@/otakudesu"
-import { revalidatePath } from "next/cache"
+import genreLists from "@/utils/genreLists"
 
 export async function GET() {
-  try {
-    const data = await otakudesu.genreLists()
-    revalidatePath("/api/genre", "page")
-    return NextResponse.json({ data: data }, { status: 200 })
-  } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
-  }
+  const data = await genreLists()
+  return NextResponse.json({ data: data }, { status: 200 })
 }

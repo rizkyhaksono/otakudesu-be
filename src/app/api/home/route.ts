@@ -1,13 +1,7 @@
 import { NextResponse, NextRequest } from "next/server"
-import otakudesu from "@/otakudesu"
-import { revalidatePath } from "next/cache"
+import home from "@/utils/home"
 
 export async function GET() {
-  try {
-    const data = await otakudesu.home()
-    revalidatePath("/api/home", "page")
-    return NextResponse.json({ data: data }, { status: 200 })
-  } catch (error) {
-    return NextResponse.json({ error: error }, { status: 500 })
-  }
+  const data = await home()
+  return NextResponse.json({ data: data }, { status: 200 })
 }

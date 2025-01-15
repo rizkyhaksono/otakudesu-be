@@ -1,21 +1,11 @@
 import { NextResponse, NextRequest } from "next/server"
-import otakudesu from "@/otakudesu"
+import animeByGenre from "@/utils/animeByGenre";
 
-export async function GET(
-  request: NextRequest,
-  props: { params: Promise<{ slug: string; page: number }> }
-) {
+export async function GET(request: NextRequest, props: { params: Promise<{ slug: string; page: number }> }) {
   const params = await props.params;
-  try {
-    const newHeaders = new Headers(request.headers)
-    const { searchParams } = new URL(request.url)
-    const reqPage = searchParams.get("page")
-    newHeaders.set("Access-Control-Allow-Origin", "*")
-
-    const pageNumber = reqPage ? parseInt(reqPage, 10) : 1
-    const data = await otakudesu.animeByGenre(params.slug, pageNumber)
-    return NextResponse.json({ data: data }, { status: 200 })
-  } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
-  }
+  const { searchParams } = new URL(request.url)
+  const reqPage = searchParams.get("page")
+  const pageNumber = reqPage ? parseInt(reqPage, 10) : 1
+  const data = await animeByGenre(params.slug, pageNumber)
+  return NextResponse.json({ data: data }, { status: 200 })
 }

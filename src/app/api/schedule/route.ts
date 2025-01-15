@@ -1,12 +1,7 @@
 import { NextResponse } from "next/server"
-import otakudesu from "@/otakudesu"
-
+import schedule from "@/utils/schedulte"
 
 export async function GET() {
-  try {
-    const data = await otakudesu.schedule()
-    return NextResponse.json({ data: data }, { status: 200 })
-  } catch (error) {
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 })
-  }
+  const data = await schedule()
+  return NextResponse.json({ data: data }, { status: 200 })
 }

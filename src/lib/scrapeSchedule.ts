@@ -1,14 +1,14 @@
 import { load } from 'cheerio';
-import { scheduleByDay } from '@/types/types';
+import { ScheduleByDay } from '@/types/types';
 
 const extractSlugFromUrl = (url: string): string => {
   const parts = url.split('/');
   return parts[parts.length - 2];
 };
 
-const scrapSchedule = (html: string): scheduleByDay[] => {
+const scrapSchedule = (html: string): ScheduleByDay[] => {
   const $ = load(html);
-  const scheduleByDay: scheduleByDay[] = [];
+  const scheduleByDay: ScheduleByDay[] = [];
 
   $('.kglist321').each((index, element) => {
     const day = $(element).find('h2').text().trim();

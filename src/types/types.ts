@@ -117,7 +117,7 @@ type batch = {
   }[]
 }
 
-interface scheduleByDay {
+interface ScheduleByDay {
   day: string;
   anime_list: {
     anime_name: string;
@@ -126,4 +126,4 @@ interface scheduleByDay {
   }[];
 }
 
-export type { anime, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch, scheduleByDay }
+export type { anime, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch, ScheduleByDay }
