@@ -126,4 +126,36 @@ interface ScheduleByDay {
   }[];
 }
 
-export type { anime, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch, ScheduleByDay }
+type animeListEntry = {
+  title: string | undefined
+  slug: string | undefined
+  otakudesu_url: string | undefined
+}
+
+type animeListGroup = {
+  letter: string
+  anime_list: animeListEntry[]
+}
+
+type movie = {
+  title: string | undefined
+  iframe_src: string | undefined
+  download_urls: {
+    mp4: {
+      resolution: string | undefined
+      urls: {
+        provider: string | undefined
+        url: string | undefined
+      }[]
+    }[]
+    mkv: {
+      resolution: string | undefined
+      urls: {
+        provider: string | undefined
+        url: string | undefined
+      }[]
+    }[]
+  }
+}
+
+export type { anime, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch, ScheduleByDay, animeListEntry, animeListGroup, movie }

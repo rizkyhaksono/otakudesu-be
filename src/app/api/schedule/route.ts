@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import schedule from "@/utils/schedulte"
+import schedule from "@/utils/schedule"
 
 export async function GET() {
   const data = await schedule()

@@ -1,51 +1,17 @@
-import axios from "axios";
-import { load } from "cheerio";
+import axios from 'axios';
+import scrapeAnimeEpisodes from '@/lib/scrapeAnimeEpisodes';
+import scrapeMovie from '@/lib/scrapeMovie';
+import type { movie as movieType } from '@/types/types';
 
 const { BASEURL } = process.env;
-const movie = async (slug: string): Promise<any> => {
-  const { data } = await axios.get(`${BASEURL}episode/${slug}`);
-  const $ = load(data);
+const movie = async (slug: string): Promise<movieType | undefined> => {
+  const { data: animeHtml } = await axios.get(`${BASEURL}/anime/${slug}`);
+  const episodes = scrapeAnimeEpisodes(animeHtml);
+  const episodeSlug = episodes?.[0]?.slug;
+  if (!episodeSlug) return undefined;
 
-  const checkUrl = $(".episodelist ul li span a").attr("href");
-  const fixedUrl = checkUrl?.split("/")[4];
-
-  const { data: movieData } = await axios.get(`${BASEURL}episode/${fixedUrl}`);
-  const $$ = load(movieData);
-
-  const title = $(".posttl").html() ?? $$(".posttl").html()
-  const iframeSrc = $("iframe").attr("src") ?? $$("iframe").attr("src");
-  const downloadLinks: { quality: string; links: { name: string; url: string }[] }[] = [];
-
-  $(".yondarkness-title").each((index, element) => {
-    const quality = $$(element).text().trim();
-    const links: { name: string; url: string }[] = [];
-    $$(element)
-      .next(".yondarkness-item")
-      .find("a")
-      .each((i, el) => {
-        const name = $$(el).text().trim();
-        const url = $$(el).attr("href") ?? "";
-        links.push({ name, url });
-      });
-    downloadLinks.push({ quality, links });
-  });
-
-  if (downloadLinks.length === 0) {
-    $$(".yondarkness-item").each((index, element) => {
-      const quality = $$(element).find("a").text().trim();
-      const links: { name: string; url: string }[] = [];
-      $$(element)
-        .find("a")
-        .each((i, el) => {
-          const name = $$(el).text().trim();
-          const url = $$(el).attr("href") ?? "";
-          links.push({ name, url });
-        });
-      downloadLinks.push({ quality, links });
-    });
-  }
-
-  return { title, iframeSrc, downloadLinks };
+  const { data: episodeHtml } = await axios.get(`${BASEURL}/episode/${episodeSlug}`);
+  return scrapeMovie(episodeHtml);
 };
 
 export default movie;
