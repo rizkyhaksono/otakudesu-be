@@ -1,7 +1,6 @@
 import { load, CheerioAPI } from 'cheerio';
+import { getBaseUrl } from '@/lib/env';
 import type { episode as episodeType } from '@/types/types';
-
-const { BASEURL } = process.env;
 const scrapeEpisode = (html: string): episodeType | undefined => {
   const $ = load(html);
   const episode = getEpisodeTitle($);
@@ -139,7 +138,7 @@ const getNextEpisode = ($: CheerioAPI) => {
 const getAnimeData = ($: CheerioAPI) => {
   if ($('.flir a:nth-child(3)').text().trim() === '' || $('.flir a:nth-child(3)').text() === undefined) {
     return {
-      slug: $('.flir a:first').attr('href')?.replace(`${BASEURL}/anime/`, '')?.replace('/', ''),
+      slug: $('.flir a:first').attr('href')?.replace(`${getBaseUrl()}/anime/`, '')?.replace('/', ''),
       otakudesu_url: $('.flir a:first').attr('href'),
     };
   }

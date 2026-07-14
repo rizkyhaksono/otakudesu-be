@@ -1,12 +1,11 @@
-import axios from 'axios';
 import scrapeAnimeByGenre from '@/lib/scrapeAnimeByGenre';
+import { assertSlug } from '@/lib/env';
+import { http } from '@/lib/http';
 
-const { BASEURL } = process.env;
 const animeByGenre = async (genre: string, page: number | string = 1) => {
-  const response = await axios.get(`${BASEURL}/genres/${genre}/page/${page}`);
-  const result = scrapeAnimeByGenre(response.data);
-
-  return result;
+  const safeGenre = assertSlug(genre, 'genre');
+  const response = await http().get(`/genres/${safeGenre}/page/${page}`);
+  return scrapeAnimeByGenre(response.data);
 };
 
 export default animeByGenre;

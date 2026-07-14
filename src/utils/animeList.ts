@@ -1,10 +1,9 @@
-import axios from 'axios';
 import scrapeAnimeList from '@/lib/scrapeAnimeList';
+import { http } from '@/lib/http';
 import type { animeListGroup } from '@/types/types';
 
-const { BASEURL } = process.env;
 const animeList = async (): Promise<animeListGroup[]> => {
-  const { data } = await axios.get(`${BASEURL}/anime-list`);
+  const { data } = await http().get('/anime-list');
   return scrapeAnimeList(data);
 };
 

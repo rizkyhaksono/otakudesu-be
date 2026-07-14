@@ -1,12 +1,9 @@
-import axios from "axios";
 import scrapSchedule from "@/lib/scrapeSchedule";
+import { http } from "@/lib/http";
 
-const { BASEURL } = process.env;
 const schedule = async () => {
-  const response = await axios.get(`${BASEURL}/jadwal-rilis`);
-  const result = scrapSchedule(response.data);
-
-  return result;
+  const response = await http().get("/jadwal-rilis");
+  return scrapSchedule(response.data);
 };
 
 export default schedule;

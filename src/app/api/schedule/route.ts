@@ -1,7 +1,6 @@
-import { NextResponse } from "next/server"
 import schedule from "@/utils/schedule"
+import { apiHandler } from "@/lib/apiHandler"
 
 export async function GET() {
-  const data = await schedule()
-  return NextResponse.json({ data: data }, { status: 200 })
+  return apiHandler(() => schedule())
 }

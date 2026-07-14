@@ -1,24 +1,22 @@
-import axios from 'axios';
 import getBatch from '@/lib/getBatch';
 import scrapeBatch from '@/lib/scrapeBatch';
+import { assertSlug } from '@/lib/env';
+import { http } from '@/lib/http';
 
-const { BASEURL } = process.env;
 const batch = async ({ batchSlug, animeSlug }: {
   batchSlug?: string, animeSlug?: string
 }) => {
-  let batch: string | undefined = batchSlug;
+  let batchPath: string | undefined = batchSlug ? assertSlug(batchSlug, 'batchSlug') : undefined;
 
   if (animeSlug) {
-    const response = await axios.get(`${BASEURL}/anime/${animeSlug}`);
+    const response = await http().get(`/anime/${assertSlug(animeSlug, 'animeSlug')}`);
     const batchData = getBatch(response.data);
-    batch = batchData?.slug;
+    batchPath = batchData?.slug;
   }
-  if (!batch) return false;
+  if (!batchPath) return false;
 
-  const response = await axios.get(`${BASEURL}/batch/${batch}`);
-  const result = scrapeBatch(response.data);
-
-  return result;
+  const response = await http().get(`/batch/${batchPath}`);
+  return scrapeBatch(response.data);
 };
 
 export default batch;

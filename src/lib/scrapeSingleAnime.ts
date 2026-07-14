@@ -2,6 +2,7 @@ import { load } from "cheerio"
 import mapGenres from "./mapGenres"
 import scrapeAnimeEpisodes from "./scrapeAnimeEpisodes"
 import getBatch from "./getBatch"
+import { getBaseUrl } from "@/lib/env"
 import type { anime, episode_list } from "@/types/types"
 
 const scrapeSingleAnime = (html: string) => {
@@ -12,7 +13,7 @@ const scrapeSingleAnime = (html: string) => {
 const createAnimeData = (html: string, poster: string | undefined, synopsis: string | undefined, episode_lists: episode_list[] | undefined): anime | undefined => {
   const $ = load(html)
   const title = $(".infozin .infozingle p:first span").text()?.replace("Judul: ", "")
-  const slug = $("link[rel=canonical]").attr("href")?.replace("https://otakudesu.cloud/anime/", "").replace("/", "")
+  const slug = $("link[rel=canonical]").attr("href")?.replace(`${getBaseUrl()}/anime/`, "").replace("/", "")
   const japanese_title = $(".infozin .infozingle p:nth-child(2) span").text()?.replace("Japanese: ", "")
   const rating = $(".infozin .infozingle p:nth-child(3) span").text()?.replace("Skor: ", "")
   const produser = $(".infozin .infozingle p:nth-child(4) span").text()?.replace("Produser: ", "")

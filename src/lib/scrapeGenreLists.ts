@@ -1,10 +1,11 @@
 import { load } from 'cheerio';
+import { getBaseUrl } from '@/lib/env';
 import type { genre as genreType } from '@/types/types';
 
-const { BASEURL } = process.env;
 const scrapeGenreLists = (html: string): genreType[] => {
   const $ = load(html);
   const result: genreType[] = [];
+  const baseUrl = getBaseUrl();
   const genres = $('#venkonten .vezone ul.genres li a').toString()
     .split('</a>')
     .filter((el) => el.trim() !== '')
@@ -12,10 +13,11 @@ const scrapeGenreLists = (html: string): genreType[] => {
 
   genres.forEach((genre) => {
     const $ = load(genre);
+    const href = $('a').attr('href') ?? '';
     result.push({
       name: $('a').text(),
-      slug: $('a').attr('href')?.replace('/genres/', '').replace('/', ''),
-      otakudesu_url: `${BASEURL}${$('a').attr('href')}`
+      slug: href.replace('/genres/', '').replace(/\//g, ''),
+      otakudesu_url: href.startsWith('http') ? href : `${baseUrl}${href.startsWith('/') ? '' : '/'}${href}`
     });
   });
 

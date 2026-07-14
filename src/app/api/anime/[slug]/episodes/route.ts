@@ -1,9 +1,11 @@
-import { NextResponse, NextRequest } from "next/server"
-import movie from "@/utils/movie";
+import { NextRequest } from "next/server"
+import episodes from "@/utils/episodes"
+import { apiHandler } from "@/lib/apiHandler"
 
-export async function GET(request: NextRequest) {
-  const urlParts = request.url.split("/")
-  const animeSlug = urlParts[5]
-  const data = await movie(animeSlug);
-  return NextResponse.json({ data: data }, { status: 200 })
+export async function GET(
+  _request: NextRequest,
+  props: { params: Promise<{ slug: string }> }
+) {
+  const params = await props.params
+  return apiHandler(() => episodes(params.slug))
 }

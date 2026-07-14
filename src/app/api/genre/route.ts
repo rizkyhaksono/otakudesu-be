@@ -1,7 +1,6 @@
-import { NextResponse, NextRequest } from "next/server"
 import genreLists from "@/utils/genreLists"
+import { apiHandler } from "@/lib/apiHandler"
 
 export async function GET() {
-  const data = await genreLists()
-  return NextResponse.json({ data: data }, { status: 200 })
+  return apiHandler(() => genreLists())
 }

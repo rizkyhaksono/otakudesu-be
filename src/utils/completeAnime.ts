@@ -1,17 +1,16 @@
-import axios from 'axios';
 import { load } from 'cheerio';
 import pagination from '@/lib/pagination';
 import scrapeCompleteAnime from '@/lib/scrapeCompleteAnime';
+import { http } from '@/lib/http';
 
-const { BASEURL } = process.env;
 const completeAnime = async (page: number | string = 1) => {
-  const { data } = await  axios.get(`${BASEURL}/complete-anime/page/${page}`);
-  const  $ = load(data);
+  const { data } = await http().get(`/complete-anime/page/${page}`);
+  const $ = load(data);
   const completeAnimeEls = $('.venutama .rseries .rapi .venz ul li').toString();
   const completeAnimeData = scrapeCompleteAnime(completeAnimeEls);
-  const paginationData =  pagination($('.pagination').toString());
+  const paginationData = pagination($('.pagination').toString());
 
-  return { 
+  return {
     paginationData,
     completeAnimeData
   };

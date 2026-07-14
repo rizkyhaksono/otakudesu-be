@@ -1,13 +1,12 @@
-import axios from 'axios';
 import scrapeAnimeEpisodes from '@/lib/scrapeAnimeEpisodes';
+import { assertSlug } from '@/lib/env';
+import { http } from '@/lib/http';
 import type { episode_list } from '@/types/types';
 
-const { BASEURL } = process.env;
 const episodes = async (slug: string): Promise<episode_list[] | undefined> => {
-  const { data } = await axios.get(`${BASEURL}/anime/${slug}`);
-  const result = scrapeAnimeEpisodes(data);
-
-  return result;
+  const safeSlug = assertSlug(slug);
+  const { data } = await http().get(`/anime/${safeSlug}`);
+  return scrapeAnimeEpisodes(data);
 };
 
 export default episodes;

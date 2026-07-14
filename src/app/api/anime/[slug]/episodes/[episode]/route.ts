@@ -1,10 +1,22 @@
-import { NextResponse, NextRequest } from "next/server"
-import episode from "@/utils/episode";
+import { NextRequest } from "next/server"
+import episode from "@/utils/episode"
+import { apiHandler } from "@/lib/apiHandler"
 
-export async function GET(request: NextRequest, props: { params: Promise<{ anime_slug: string; episode: number }> }) {
-  const params = await props.params;
-  const urlParts = request.url.split("/")
-  const animeSlug = urlParts[5]
-  const data = await episode({ animeSlug: animeSlug, episodeNumber: params.episode })
-  return NextResponse.json({ data: data }, { status: 200 })
+export async function GET(
+  _request: NextRequest,
+  props: { params: Promise<{ slug: string; episode: string }> }
+) {
+  const params = await props.params
+  const episodeNumber = parseInt(params.episode, 10)
+
+  return apiHandler(async () => {
+    if (Number.isNaN(episodeNumber)) {
+      throw new Error("Invalid episode")
+    }
+
+    return episode({
+      animeSlug: params.slug,
+      episodeNumber,
+    })
+  })
 }

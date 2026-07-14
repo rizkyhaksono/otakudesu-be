@@ -3,7 +3,6 @@ import pagination from './pagination';
 import mapGenres from './mapGenres';
 import type { genre } from '@/types/types';
 
-const { BASEURL } = process.env;
 const scrapeAnimeByGenre = (html: string) => {
   const $ = load(html);
   const animeElements = $('.venser .page .col-anime-con').toString()

@@ -1,13 +1,20 @@
-import axios from 'axios';
 import scrapeSearchResult from '@/lib/scrapeSearchResult';
+import { http } from '@/lib/http';
 import { searchResultAnime } from '@/types/types';
 
-const { BASEURL } = process.env;
 const search = async (keyword: string): Promise<searchResultAnime[]> => {
-  const response = await axios.get(`${BASEURL}/?s=${keyword}&post_type=anime`);
-  const html = response.data;
-  const searchResult = scrapeSearchResult(html);
-  return searchResult;
+  const query = keyword.trim();
+  if (!query || query.length > 100) {
+    throw new Error('Invalid keyword');
+  }
+
+  const response = await http().get('/', {
+    params: {
+      s: query,
+      post_type: 'anime',
+    },
+  });
+  return scrapeSearchResult(response.data);
 };
 
 export default search;

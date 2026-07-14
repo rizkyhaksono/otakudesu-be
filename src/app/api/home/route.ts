@@ -1,7 +1,6 @@
-import { NextResponse, NextRequest } from "next/server"
 import home from "@/utils/home"
+import { apiHandler } from "@/lib/apiHandler"
 
 export async function GET() {
-  const data = await home()
-  return NextResponse.json({ data: data }, { status: 200 })
+  return apiHandler(() => home())
 }
