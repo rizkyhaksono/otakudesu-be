@@ -1,27 +1,39 @@
 {
   "name": "otakudesu-be",
-  "version": "2.0.1",
+  "version": "3.0.0",
   "private": true,
+  "description": "Community API for anime, comics, movies and Indonesian live TV",
+  "license": "MIT",
+  "packageManager": "bun@1.3.14",
+  "engines": {
+    "node": ">=20.9.0"
+  },
   "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "next dev",
+    "build": "next build && bun run assemble",
+    "start": "node .next/standalone/server.js",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test tests/shared tests/anime tests/comic tests/movie tests/tv",
+    "test:live": "bun test tests/live --timeout 30000",
+    "assemble": "cp -R public .next/standalone/ 2>/dev/null || true; mkdir -p .next/standalone/.next && cp -R .next/static .next/standalone/.next/",
+    "start:dev": "next start"
   },
   "dependencies": {
-    "axios": "^1.18.0",
-    "cheerio": "^1.0.0",
-    "dotenv": "^16.4.7",
-    "next": "16.3.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0"
+    "cheerio": "^1.2.0",
+    "next": "16.3.1",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@types/node": "^20.17.13",
-    "@types/react": "^19.0.1",
-    "@types/react-dom": "^19.0.1",
-    "eslint": "^9.0.0",
-    "eslint-config-next": "15.4.7",
-    "typescript": "^5.7.3"
+    "@types/bun": "^1.3.14",
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "eslint": "9.39.5",
+    "eslint-config-next": "16.3.1",
+    "typescript": "5.9.3"
   }
 }

@@ -1,83 +1,94 @@
-# Otakudesu API Scraper
+# Otakudesu Community API
 
-Unofficial API scraper for Otakudesu. Educational use only — use at your own risk.
+[![CI](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/ci.yml/badge.svg)](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
+[![Bun](https://img.shields.io/badge/runtime-bun%201.3-black)](https://bun.sh)
+[![Next.js](https://img.shields.io/badge/next.js-16-black)](https://nextjs.org)
 
-## Star History
+One read-only public API for **anime**, **comics**, **movies & series**, and **Indonesian live TV**.
 
-[![Star History Chart](https://api.star-history.com/svg?repos=rizkyhaksono/otakudesu-be&type=Date)](https://star-history.com/#rizkyhaksono/otakudesu-be&Date)
+This service replaces three separate backends (`otakudesu-be`, `nateegami-api`, `nateeflix-api`)
+with a single Next.js App Router deployment. Community-built, community-maintained, MIT licensed.
 
-## Environment
+## What it serves
 
-Copy `.env.example` to `.env` and set `BASEURL` to the Otakudesu site origin:
+| Domain | Source | What you get |
+| --- | --- | --- |
+| **Anime** | Otakudesu (scraped) | Ongoing / completed listings, A–Z directory, detail, episodes, batches, genres, schedule, search |
+| **Comic** | Kiryuu ID (Laravel + Inertia JSON) | Listings, detail with full chapter list, and the **reader payload** — ordered page images with prev/next |
+| **Movie & series** | [TMDB](https://www.themoviedb.org/) + embed providers | Metadata, cast, seasons, search, genres, and playable embed sources |
+| **Live TV** | [iptv-org](https://github.com/iptv-org/iptv) | Indonesian channels, categories, and a CORS-safe HLS proxy |
 
-```bash
-cp .env.example .env
-```
+Every successful response is `{ data }`. Every failure is `{ error }`. All endpoints are `GET`.
 
-```env
-BASEURL=https://otakudesu.blog/
-```
+**Browse the reference at `/docs`, or grab the OpenAPI 3.1 spec at `/api/openapi.json`.**
 
-## Installation
-
-```bash
-npm install
-```
-
-## Running locally
-
-```bash
-npm run build
-npm run start
-```
-
-Dev server:
+## Quick start
 
 ```bash
-npm run dev
+bun install
+cp .env.example .env      # fill in the values you need
+bun run dev               # http://localhost:3000
 ```
 
-Health check: `GET /api/health`
+Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently — a missing
+`TMDB_ACCESS_TOKEN` makes the movie endpoints return empty results rather than breaking the service.
 
-## Docker (recommended)
+### Environment
 
-Builds a standalone Next.js image and runs `node server.js` (does **not** use the Node image `docker-entrypoint.sh`).
+| Variable | Required | Default | Purpose |
+| --- | --- | --- | --- |
+| `ANIME_BASE_URL` | ✅ | — | Upstream anime site origin (`BASEURL` still works as a legacy alias) |
+| `COMIC_BASE_URL` | | `https://kiryuuid.net` | Upstream comic site origin |
+| `TMDB_ACCESS_TOKEN` | | — | TMDB **v4 API Read Access Token** — themoviedb.org → Settings → API |
+| `TMDB_LANGUAGE` | | `id-ID` | Metadata language |
+| `MOVIE_EMBED_PROVIDERS` | | `2embed,videasy,vidsrc` | Ordered list of enabled embed players |
+| `IPTV_API_URL` | | `https://iptv-org.github.io/api` | Live TV index |
+| `TV_COUNTRY` | | `ID` | ISO country filter for live TV |
+| `MOVIEBOX_API_URL` | | — | Optional extra adapter; disabled when empty |
+| `RATE_LIMIT_PER_MINUTE` | | `120` | Per-IP request budget |
+| `HLS_PROXY_SECRET` | | random per process | Set this only when running multiple replicas |
+
+## Scripts
 
 ```bash
-docker compose up --build -d
+bun run dev         # dev server
+bun run build       # production build (standalone output)
+bun run start       # run the build
+bun run lint        # eslint (flat config)
+bun run typecheck   # tsc --noEmit
+bun test            # unit tests — fixture-based, no network
+bun run test:live   # opt-in suite that hits the real upstreams
 ```
 
-Service listens on host port `31421` → container `3000`. Set `BASEURL` via env or `.env`.
+## Architecture in one paragraph
 
-## Portainer
+`src/lib/shared/` is the only I/O boundary: `http.ts` wraps native `fetch` (not axios — Next.js
+only applies its Data Cache to `fetch`), `env.ts` validates configuration, `sanitize.ts` strips
+HTML out of everything scraped, and `apiHandler.ts` is the single place that maps a domain function
+to an HTTP response. Each domain then has pure parsers in `src/lib/<domain>/`, an I/O layer in
+`src/utils/<domain>/`, and thin route handlers in `src/app/api/v1/<domain>/`. See
+[ARCHITECTURE.md](ARCHITECTURE.md) for why each source was chosen.
 
-### Quick fix for `docker-entrypoint.sh: permission denied`
+## Backwards compatibility
 
-If you run `node:24-alpine` with a bind-mounted app directory, **override the entrypoint**:
-
-```yaml
-entrypoint: ["npm", "run", "start"]
-```
-
-See [`docker-compose.portainer.yml`](./docker-compose.portainer.yml) for a full stack example (`fe` + `be`).
-
-On the host path you must still have installed deps and a production build:
-
-```bash
-cd /home/otakudesu-be-v2
-git pull
-npm ci
-npm run build
-```
-
-### Preferred: deploy the built image
-
-Build/push this repo’s `Dockerfile`, then use [`docker-compose.yml`](./docker-compose.yml) (no bind-mount, no Node entrypoint). Attach the stack to your external nginx network as needed.
-
-## License
-
-[MIT License](./LICENSE)
+The pre-v1 paths (`/api/home`, `/api/anime/:slug`, `/api/ongoing-anime/:page`, …) still work.
+They are mapped onto `/api/v1/anime/*` by `rewrites()` in `next.config.ts` — rewrites, not
+redirects, so existing consumers need no changes.
 
 ## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+Upstream sites change their markup without warning; that is the single most common reason something
+here breaks, and the most common kind of contribution. Start with
+[CONTRIBUTING.md](CONTRIBUTING.md) — it walks through adding a source adapter and capturing a test
+fixture. Security issues go to [SECURITY.md](SECURITY.md).
+
+## Disclaimer
+
+This project is an **index and aggregator**. It hosts no media, stores no copyrighted content, and
+serves only links and metadata that are already publicly accessible. All content belongs to its
+respective owners. Provided for educational purposes.
+
+## License
+
+[MIT](LICENSE)

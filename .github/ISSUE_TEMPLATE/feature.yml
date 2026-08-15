@@ -1,0 +1,22 @@
+name: Feature request
+description: Suggest an endpoint, source or capability
+title: "[feat] "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem does this solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+
+  - type: dropdown
+    id: domain
+    attributes:
+      label: Domain
+      options: [Anime, Comic, Movie, Live TV, Cross-cutting]

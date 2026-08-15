@@ -1,24 +1,23 @@
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "Natee Otakudesu API",
-  description: "Otakudesu unofficial API, made by rizkyhaksono with 🤍",
-}
+  title: "Otakudesu Community API",
+  description:
+    "Open-source read-only API for anime, comics, movies and Indonesian live TV.",
+  robots: { index: true, follow: false },
+};
 
-export const viewport = {
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "white" },
-    { media: "(prefers-color-scheme: dark)", color: "black" },
-  ],
-  icons: {
-    icon: "/favicon.ico",
-  },
-}
+export const viewport: Viewport = {
+  themeColor: "#0b0b0c",
+  width: "device-width",
+  initialScale: 1,
+};
 
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>{children}</body>
     </html>
-  )
+  );
 }
