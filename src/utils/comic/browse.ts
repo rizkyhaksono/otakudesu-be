@@ -42,21 +42,48 @@ const comicBrowse = async (options: {
 };
 
 /**
- * The upstream's genre table is mostly SEO keyword spam: ~1,550 rows, of which
- * only 18 are real genres. The real ones are the only entries with an `icon`
- * — everything else is a manga title reused as a tag ("… bahasa Indonesia",
- * "… Sub Indo"). Filtering on the icon is what separates them.
+ * Separate the curated genre list from the upstream's keyword spam.
+ *
+ * The genre table holds ~1,550 rows but only ~90 are genres. The rest were
+ * inserted in a single bulk import — manga titles reused as tags, including
+ * "… Sub Indo" and "… bahasa Indonesia" variants — and they all share one
+ * `created_at` date.
+ *
+ * Detecting that batch beats the obvious heuristics: filtering on the presence
+ * of an icon drops real genres (only 18 have one, so Harem, Isekai and School
+ * life all disappeared), and filtering on name length keeps junk like
+ * "Manager Kim". Finding the dominant creation date is self-adjusting if the
+ * upstream ever re-imports.
  */
 function uniqueGenres(raw: unknown): ComicGenre[] {
-  const seen = new Map<string, ComicGenre>();
+  const entries = (Array.isArray(raw) ? raw : []).map(mapGenre).filter(isPresent);
+  if (!entries.length) return [];
 
-  for (const entry of Array.isArray(raw) ? raw : []) {
-    const genre = mapGenre(entry);
-    if (!genre?.icon) continue;
-    if (!seen.has(genre.slug)) seen.set(genre.slug, genre);
+  const byDate = new Map<string, number>();
+  for (const genre of entries) {
+    const day = genre.created_at?.slice(0, 10) ?? "";
+    byDate.set(day, (byDate.get(day) ?? 0) + 1);
+  }
+
+  const [bulkDay, bulkCount] = [...byDate.entries()].reduce((a, b) => (b[1] > a[1] ? b : a));
+  // Only treat it as an import when it dominates; otherwise keep everything.
+  const isBulk = bulkCount > entries.length / 2;
+
+  const seen = new Map<string, ComicGenre>();
+  for (const genre of entries) {
+    if (isBulk && genre.created_at?.slice(0, 10) === bulkDay) continue;
+    if (/(sub indo|bahasa indonesia)/i.test(genre.name)) continue;
+    if (seen.has(genre.slug)) continue;
+
+    // `created_at` is an implementation detail of this filter, not public data.
+    seen.set(genre.slug, { name: genre.name, slug: genre.slug, icon: genre.icon });
   }
 
   return [...seen.values()].sort((a, b) => a.name.localeCompare(b.name, "id"));
+}
+
+function isPresent<T>(value: T | null): value is T {
+  return value !== null;
 }
 
 export default comicBrowse;

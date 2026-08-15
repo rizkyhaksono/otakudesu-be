@@ -24,7 +24,13 @@ export function mapGenre(raw: unknown): ComicGenre | null {
   const name = text(genre.name);
   const slug = text(genre.slug);
   if (!name || !slug) return null;
-  return { name, slug, icon: text(genre.icon) };
+  return {
+    name,
+    slug,
+    icon: text(genre.icon),
+    // Kept for classification only; stripped before the API responds.
+    created_at: text(genre.created_at),
+  };
 }
 
 export function mapChapterRef(raw: unknown): ComicChapterRef | null {
