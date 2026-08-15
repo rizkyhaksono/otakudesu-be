@@ -70,6 +70,13 @@ type episode_list = {
   otakudesu_url: string | undefined
 }
 
+type episode_mirror = {
+  provider: string
+  quality: string | null
+  /** Opaque token passed back to the mirror-resolve endpoint. */
+  content: string
+}
+
 type episode = {
   episode: string
   anime: {
@@ -87,6 +94,8 @@ type episode = {
     otakudesu_url: string | undefined
   } | null
   stream_url: string | undefined
+  /** Alternate servers for this episode; resolve via /api/v1/anime/mirror. */
+  mirrors: episode_mirror[]
   download_urls: {
     mp4: {
       resolution: string | undefined
@@ -158,4 +167,4 @@ type movie = {
   }
 }
 
-export type { anime, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch, ScheduleByDay, animeListEntry, animeListGroup, movie }
+export type { anime, episode_mirror, searchResultAnime, ongoingAnime, completeAnime, genre, episode_list, episode, batch, ScheduleByDay, animeListEntry, animeListGroup, movie }

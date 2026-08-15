@@ -62,10 +62,15 @@ async function buildIndex(): Promise<Index> {
   const base = getIptvApiUrl();
   const country = getTvCountry();
 
+  // `cache: "no-store"`, not `revalidate`: these documents are 10 MB, 7 MB and
+  // 3 MB, far past Next's 2 MB per-entry Data Cache limit. Asking Next to cache
+  // them fails on every request, logs a warning, and re-downloads ~20 MB each
+  // time. The module-level memo above is the real cache — it holds the *reduced*
+  // index, which is a few hundred KB.
   const [rawChannels, rawStreams, rawLogos] = await Promise.all([
-    fetchJson<RawChannel[]>(`${base}/channels.json`, { revalidate: 21_600, timeoutMs: 60_000 }),
-    fetchJson<RawStream[]>(`${base}/streams.json`, { revalidate: 21_600, timeoutMs: 60_000 }),
-    fetchJson<RawLogo[]>(`${base}/logos.json`, { revalidate: 21_600, timeoutMs: 60_000 }).catch(
+    fetchJson<RawChannel[]>(`${base}/channels.json`, { revalidate: 0, timeoutMs: 120_000 }),
+    fetchJson<RawStream[]>(`${base}/streams.json`, { revalidate: 0, timeoutMs: 120_000 }),
+    fetchJson<RawLogo[]>(`${base}/logos.json`, { revalidate: 0, timeoutMs: 120_000 }).catch(
       () => [] as RawLogo[],
     ),
   ]);

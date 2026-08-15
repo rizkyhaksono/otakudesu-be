@@ -56,7 +56,10 @@ export const tvChannels = async (options: { category?: string; q?: string } = {}
 export const tvChannel = async (id: string): Promise<TvChannelPublic | null> => {
   const { byId } = await getIndex();
   const channel = byId.get(id);
-  return channel ? toPublic(channel) : null;
+  // Same rule as the listing: a channel proven to have no playable stream is
+  // treated as missing, so the page 404s instead of rendering a dead player.
+  if (!channel || !hasPlayableStream(channel)) return null;
+  return toPublic(channel);
 };
 
 export const tvCategories = async (): Promise<TvCategory[]> => {

@@ -1,4 +1,5 @@
 import { load, CheerioAPI } from 'cheerio';
+import scrapeMirrors from './scrapeMirrors';
 import type { episode as episodeType } from '@/types/anime';
 const scrapeEpisode = (html: string, baseUrl: string): episodeType | undefined => {
   const $ = load(html);
@@ -8,6 +9,7 @@ const scrapeEpisode = (html: string, baseUrl: string): episodeType | undefined =
   const previous_episode = getPrevEpisode($);
   const next_episode = getNextEpisode($);
   const anime = getAnimeData($, baseUrl);
+  const mirrors = scrapeMirrors(html);
   if (!episode) return undefined;
 
   return {
@@ -18,6 +20,7 @@ const scrapeEpisode = (html: string, baseUrl: string): episodeType | undefined =
     has_previous_episode: !!previous_episode,
     previous_episode,
     stream_url,
+    mirrors,
     download_urls,
   };
 };
