@@ -9,7 +9,7 @@
 type Op = {
   path: string;
   summary: string;
-  tag: "Anime" | "Comic" | "Movie" | "Live TV" | "Meta";
+  tag: "Anime" | "Comic" | "Movie" | "Live TV" | "Radio" | "News" | "Meta";
   params?: { name: string; in: "path" | "query"; required?: boolean; description: string }[];
 };
 
@@ -196,6 +196,31 @@ const OPERATIONS: Op[] = [
       { name: "s", in: "query", description: "Stream index, defaults to 0" },
     ],
   },
+
+  {
+    path: "/api/v1/radio/stations",
+    summary: "Indonesian radio stations that passed the upstream liveness check",
+    tag: "Radio",
+    params: [
+      { name: "tag", in: "query", description: "Filter by tag slug, e.g. `dangdut`" },
+      { name: "q", in: "query", description: "Search by station name" },
+    ],
+  },
+  { path: "/api/v1/radio/tags", summary: "Station tags with counts", tag: "Radio" },
+  {
+    path: "/api/v1/radio/stations/{id}",
+    summary: "One station",
+    tag: "Radio",
+    params: [{ name: "id", in: "path", required: true, description: "radio-browser station UUID" }],
+  },
+  {
+    path: "/api/v1/radio/stations/{id}/stream",
+    summary: "Audio proxy for stations the browser cannot reach directly",
+    tag: "Radio",
+    params: [{ name: "id", in: "path", required: true, description: "radio-browser station UUID" }],
+  },
+
+  { path: "/api/v1/news", summary: "Latest anime news headlines", tag: "News" },
 ];
 
 export function operations() {

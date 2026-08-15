@@ -28,7 +28,7 @@ rather than failing the service.
 
 ## Architecture
 
-Four domains — anime, comic, movie, live TV — behind one API. The layering is strict:
+Six domains — anime, comic, movie, live TV, radio, news — behind one API. The layering is strict:
 
 ```
 src/app/api/v1/<domain>/…   route handlers: validate params, call a util, return via apiHandler
@@ -61,9 +61,16 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
   domain is gone and every mirror sits behind a Cloudflare managed challenge.
 - **Live TV** reads the iptv-org JSON index, memoised for six hours. A background pass probes each
   stream and hides channels whose streams are all dead.
-- **The HLS proxy is the one SSRF-sensitive route.** It never accepts a caller-supplied URL: it
-  takes a channel id, or a URL this server HMAC-signed itself while rewriting a manifest.
-  `assertPublicUrl` re-resolves the host and rejects private ranges. Do not relax either layer.
+- **Radio** mirrors the live TV design: a memoised public index, `lastcheckok` from the upstream
+  standing in for our own liveness probe, and a proxy that takes a station id rather than a URL.
+  Plain-HTTP streams are surfaced with `direct: null` so the client never fires a request the
+  browser will block on an HTTPS page.
+- **News** is RSS parsed with regex, deliberately: the shape is fixed and shallow, and an XML
+  library would be the only one in the project.
+- **The HLS and radio proxies are the SSRF-sensitive routes.** Neither ever accepts a
+  caller-supplied URL: they take a channel or station id, or a URL this server HMAC-signed itself
+  while rewriting a manifest. `assertPublicUrl` re-resolves the host and rejects private ranges.
+  Do not relax either layer.
 
 ## Backwards compatibility
 

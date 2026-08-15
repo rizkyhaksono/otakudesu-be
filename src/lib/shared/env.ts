@@ -50,6 +50,20 @@ export function getIptvApiUrl(): string {
   return readUrl(["IPTV_API_URL"], "live TV index", "https://iptv-org.github.io/api");
 }
 
+/** radio-browser API mirror. */
+export function getRadioApiUrl(): string {
+  return readUrl(["RADIO_API_URL"], "radio index", "https://de1.api.radio-browser.info");
+}
+
+/** RSS feed for the news section. */
+export function getNewsFeedUrl(): string {
+  return readUrl(
+    ["NEWS_FEED_URL"],
+    "news feed",
+    "https://www.animenewsnetwork.com/all/rss.xml?ann-edition=w",
+  );
+}
+
 /** ISO 3166-1 alpha-2 country used to filter the live TV index. */
 export function getTvCountry(): string {
   return (process.env.TV_COUNTRY?.trim() || "ID").toUpperCase();

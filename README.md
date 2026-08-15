@@ -18,6 +18,8 @@ with a single Next.js App Router deployment. Community-built, community-maintain
 | **Comic** | Kiryuu ID (Laravel + Inertia JSON) | Listings, detail with full chapter list, and the **reader payload** — ordered page images with prev/next |
 | **Movie & series** | [TMDB](https://www.themoviedb.org/) + embed providers | Metadata, cast, seasons, search, genres, and playable embed sources |
 | **Live TV** | [iptv-org](https://github.com/iptv-org/iptv) | Indonesian channels, categories, and a CORS-safe HLS proxy |
+| **Radio** | [radio-browser](https://www.radio-browser.info/) | Indonesian stations, tags, and an audio proxy for streams the browser cannot reach |
+| **News** | [Anime News Network](https://www.animenewsnetwork.com/) | Latest anime headlines from the public RSS feed |
 
 Every successful response is `{ data }`. Every failure is `{ error }`. All endpoints are `GET`.
 
@@ -44,6 +46,8 @@ Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently �
 | `TMDB_LANGUAGE` | | `id-ID` | Metadata language |
 | `MOVIE_EMBED_PROVIDERS` | | `2embed,videasy,vidsrc` | Ordered list of enabled embed players |
 | `IPTV_API_URL` | | `https://iptv-org.github.io/api` | Live TV index |
+| `RADIO_API_URL` | | `https://de1.api.radio-browser.info` | Radio station index |
+| `NEWS_FEED_URL` | | ANN weekly feed | RSS source for the news endpoint |
 | `TV_COUNTRY` | | `ID` | ISO country filter for live TV |
 | `MOVIEBOX_API_URL` | | — | Optional extra adapter; disabled when empty |
 | `RATE_LIMIT_PER_MINUTE` | | `120` | Per-IP request budget |
