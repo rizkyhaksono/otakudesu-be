@@ -88,6 +88,13 @@ const OPERATIONS: Op[] = [
     params: [{ name: "slug", in: "path", required: true, description: "Anime slug" }],
   },
 
+  {
+    path: "/api/v1/anime/muse",
+    summary: "Official Muse Indonesia playlist matching an anime title, when one exists",
+    tag: "Anime",
+    params: [{ name: "title", in: "query", required: true, description: "Anime title to match" }],
+  },
+
   { path: "/api/v1/comic/home", summary: "Popular, trending and latest comics and novels", tag: "Comic" },
   {
     path: "/api/v1/comic/{slug}",
