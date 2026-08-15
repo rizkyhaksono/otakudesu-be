@@ -1,0 +1,61 @@
+name: Upstream health
+
+# Upstream sites change their markup without warning. This turns "a user
+# eventually complains" into "an issue is opened automatically".
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.14
+
+      - run: bun install --frozen-lockfile
+
+      - id: live
+        name: Probe upstreams
+        continue-on-error: true
+        run: bun run test:live
+        env:
+          ANIME_BASE_URL: https://otakudesu.blog
+          COMIC_BASE_URL: https://kiryuuid.net
+          TMDB_ACCESS_TOKEN: ${{ secrets.TMDB_ACCESS_TOKEN }}
+
+      - name: Open an issue when a source breaks
+        if: steps.live.outcome == 'failure'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = "Upstream health check failed";
+            const { data: existing } = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: "open",
+              labels: "upstream",
+            });
+            if (existing.some((issue) => issue.title === title)) return;
+            await github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title,
+              labels: ["upstream", "bug"],
+              body: [
+                "The nightly upstream probe failed — a source site has most likely changed its markup or gone offline.",
+                "",
+                `Run: ${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`,
+                "",
+                "See CONTRIBUTING.md for how to capture a fresh fixture and fix the parser.",
+              ].join("\n"),
+            });

@@ -1,4 +1,6 @@
 node_modules
+tests
+.github
 .next
 .git
 .gitignore

@@ -1,58 +1,86 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+Guidance for AI agents working in this repository.
 
 ## Commands
 
-- `npm run dev` — start the dev server with Turbopack (http://localhost:3000)
-- `npm run build` — production build
-- `npm run start` — run the production build
-- `npm run lint` — run `next lint` (extends `next/core-web-vitals`)
+```bash
+bun run dev         # dev server on :3000
+bun run build       # production build (standalone)
+bun run lint        # eslint flat config  (`next lint` was REMOVED in Next 16)
+bun run typecheck   # tsc --noEmit
+bun test <dirs>     # unit tests — fixture-based, never touch the network
+bun run test:live   # opt-in suite that hits real upstreams
+```
 
-There is no test runner configured.
+Package manager is **bun**. There is no `package-lock.json`.
+
+Toolchain note: TypeScript is pinned to 5.9 and ESLint to 9, not the newest releases.
+typescript-eslint does not support TS 7, and `eslint-plugin-react` (pulled in by
+`eslint-config-next`) still calls `context.getFilename()`, removed in ESLint 10. Both were verified
+to break; do not bump them without re-checking.
 
 ## Environment
 
-`BASEURL` (in `.env`) is **required** — it is the upstream Otakudesu site origin (e.g. `https://otakudesu.cloud`) that every scraper hits via `` axios.get(`${BASEURL}/...`) ``. Most utils will throw on `undefined` rather than fail loudly. Copy `.env.example` to `.env` before running.
+See `.env.example`. Only `ANIME_BASE_URL` is required (`BASEURL` is a legacy alias). Every other
+domain degrades on its own: no `TMDB_ACCESS_TOKEN` means the movie endpoints return empty results
+rather than failing the service.
 
 ## Architecture
 
-This is a Next.js 15 App Router project used **as an API-only backend** — `src/app/page.tsx` is a placeholder; all real surface area is under `src/app/api/*`. CORS is opened to `*` for all paths in `next.config.js`.
+Four domains — anime, comic, movie, live TV — behind one API. The layering is strict:
 
-Every endpoint follows the same three-layer pattern:
+```
+src/app/api/v1/<domain>/…   route handlers: validate params, call a util, return via apiHandler
+src/utils/<domain>/…        I/O layer: fetch upstream, hand the body to a parser
+src/lib/<domain>/…          pure parsers: data in, data out
+src/lib/shared/…            http · env · errors · sanitize · validate · rateLimit · ssrf · apiHandler
+src/proxy.ts                per-IP rate limiting (renamed from middleware in Next 16)
+```
 
-1. **Route handler** (`src/app/api/<resource>/route.ts`) — thin Next.js handler. Awaits `props.params` (Next 15 makes params a Promise), calls the matching util, wraps the result in `NextResponse.json({ data }, { status })`. Errors typically become a generic 500.
-2. **Util** (`src/utils/<resource>.ts`) — fetches HTML from `${BASEURL}/...` with `axios` and hands the body to a scraper in `lib/`. Some utils also parse pagination via `src/lib/pagination.ts`.
-3. **Lib scraper** (`src/lib/scrape*.ts`) — pure functions that take an HTML string, load it with `cheerio`, and return typed data. No I/O.
+### Rules that must survive edits
 
-Shared TypeScript types (`anime`, `episode`, `searchResultAnime`, `ongoingAnime`, `completeAnime`, `genre`, `batch`, `ScheduleByDay`, `animeListGroup`, `movie`) live in `src/types/types.ts` and are imported via the `@/*` path alias (mapped to `./src/*` in `tsconfig.json`).
+- **Parsers are pure.** No `fetch`, no `process.env`. If a parser needs the upstream origin, it
+  takes `baseUrl` as an argument — that is what makes every one of them testable against a fixture.
+- **`apiHandler` owns the response shape.** Success is `{ data }`, failure is `{ error }`. Never
+  build an error response by hand; throw a typed error from `src/lib/shared/errors.ts`.
+- **All upstream text goes through `sanitize.ts`.** Scraped content is untrusted — the comic
+  upstream ships raw `<p>` markup inside novel synopses.
+- **Validate every route param** with a schema from `src/lib/shared/validate.ts`, so bad input is a
+  400 rather than a 500 further down.
+- **Async params**: handlers use `props: { params: Promise<{...}> }` and `await props.params`.
+- **Unit tests never hit the network.** Network checks belong in `tests/live/`.
 
-### Endpoint map
+### Domain specifics
 
-| Route | Util | Notes |
-| --- | --- | --- |
-| `GET /api/home` | `utils/home.ts` | Scrapes ongoing + complete from the homepage in one request. |
-| `GET /api/anime/[slug]` | `utils/anime.ts` → `lib/scrapeSingleAnime.ts` | Composes `scrapeAnimeEpisodes`, `getBatch`, `mapGenres`, recommendations. |
-| `GET /api/anime/[slug]/episodes` | `utils/episodes.ts` | |
-| `GET /api/anime/[slug]/episodes/[episode]` | `utils/episode.ts` | Resolves episode-number → episode-slug by reading the anime's episode list (handles 0- vs 1-indexed series). |
-| `GET /api/episode/[slug]` | `utils/episode.ts` | Direct slug variant. |
-| `GET /api/ongoing-anime/[id]` | `utils/ongoingAnime.ts` | `id` is the page number; returns `{ paginationData, ongoingAnimeData }`. |
-| `GET /api/complete-anime/[page]` | `utils/completeAnime.ts` | |
-| `GET /api/genre/[slug]` | `utils/animeByGenre.ts` | Also reads `?page=` query param. |
-| `GET /api/search/[keyword]` | `utils/search.ts` | |
-| `GET /api/schedule` | `utils/schedule.ts` | |
-| `GET /api/batch/[slug]` | `utils/batch.ts` → `lib/scrapeBatch.ts` | Returns 404 when no batch exists for the slug. |
-| `GET /api/movie/[slug]` | `utils/movie.ts` → `lib/scrapeMovie.ts` | `slug` is the anime slug; util resolves the single episode and scrapes its iframe + downloads. |
-| `GET /api/anime-list` | `utils/animeList.ts` → `lib/scrapeAnimeList.ts` | A–Z directory grouped by letter. |
+- **Comic** is not scraped with CSS selectors. The upstream is Laravel + Inertia; the whole page
+  state lives in the `data-page` attribute as JSON. Parse that. Chapters are addressed by
+  `chapter_number`, not slug.
+- **Movie** uses TMDB for metadata plus a registry of embed providers keyed by TMDB id
+  (`src/lib/movie/providers.ts`) — pure URL construction, no scraping. idlix was dropped: the
+  domain is gone and every mirror sits behind a Cloudflare managed challenge.
+- **Live TV** reads the iptv-org JSON index, memoised for six hours. A background pass probes each
+  stream and hides channels whose streams are all dead.
+- **The HLS proxy is the one SSRF-sensitive route.** It never accepts a caller-supplied URL: it
+  takes a channel id, or a URL this server HMAC-signed itself while rewriting a manifest.
+  `assertPublicUrl` re-resolves the host and rejects private ranges. Do not relax either layer.
 
-### Conventions to preserve when editing
+## Backwards compatibility
 
-- **Async params**: route handlers use the Next 15 signature `props: { params: Promise<{ ... }> }` and `await props.params`. Don't regress to the synchronous form.
-- **Util signature**: utils are the I/O boundary; lib scrapers stay pure (HTML in, data out) so they remain unit-testable in isolation.
-- **Pagination**: anything paged must use `lib/pagination.ts` and return both `paginationData` and the data array — match the existing shape.
-- **Selectors**: scrapers depend on Otakudesu's exact CSS structure (e.g. `.infozin .infozingle p:nth-child(N) span`). When upstream HTML changes, fix the selector in the relevant `lib/scrape*.ts` rather than working around it in the route or util.
-- **TypeScript**: `strict` is on; prefer extending the existing types in `src/types/types.ts` over inlining new shapes.
+Pre-v1 paths still work via `rewrites()` in `next.config.ts`. Add new endpoints under `/api/v1/`
+and register them in `src/lib/openapi.ts` so they show up at `/docs`.
 
 ## Disclaimer
 
-The scraper targets a third-party site for educational purposes — see `README.md`. Don't add features that hammer the upstream (no aggressive prefetch/loops in route handlers).
+This is an index/aggregator for third-party sources; it hosts no media. Do not add anything that
+hammers an upstream (no prefetch loops, no unthrottled fan-out).
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

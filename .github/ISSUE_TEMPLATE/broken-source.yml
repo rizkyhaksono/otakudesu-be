@@ -1,0 +1,33 @@
+name: Broken source / scraper
+description: An endpoint returns empty, partial or wrong data
+title: "[broken] "
+labels: [bug, upstream]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Upstream sites change their markup regularly. This is the most common issue — thanks for reporting it.
+
+  - type: input
+    id: endpoint
+    attributes:
+      label: Endpoint
+      placeholder: /api/v1/comic/some-slug/chapter/12
+    validations:
+      required: true
+
+  - type: input
+    id: upstream
+    attributes:
+      label: Upstream URL it reads from
+      placeholder: https://kiryuuid.net/manga/some-slug/chapter/12
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: What you expected vs what you got
+      placeholder: |
+        Expected: 40 page images
+        Got: { "data": { "images": [] } }
+    validations:
+      required: true

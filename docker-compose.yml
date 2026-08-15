@@ -1,19 +1,40 @@
-# Recommended production deploy (build image, no bind-mount, no Node entrypoint).
-# Portainer: set BASEURL, attach to your nginx network, then deploy.
+# Production deploy: build the image, no bind mounts, configuration at runtime.
+# Portainer: fill in the environment below, attach to your nginx network, deploy.
 
 services:
   be:
     build:
       context: .
-      args:
-        BASEURL: ${BASEURL:-https://otakudesu.blog/}
     image: otakudesu-be:latest
-    container_name: otakudesu-be-v2
+    container_name: otakudesu-be-v3
     ports:
       - "31421:3000"
     environment:
-      BASEURL: ${BASEURL:-https://otakudesu.blog/}
+      # Anime (required)
+      ANIME_BASE_URL: ${ANIME_BASE_URL:-https://otakudesu.blog}
+      # Comic
+      COMIC_BASE_URL: ${COMIC_BASE_URL:-https://kiryuuid.net}
+      # Movie — without a token the movie endpoints return empty results
+      TMDB_ACCESS_TOKEN: ${TMDB_ACCESS_TOKEN:-}
+      TMDB_LANGUAGE: ${TMDB_LANGUAGE:-id-ID}
+      MOVIE_EMBED_PROVIDERS: ${MOVIE_EMBED_PROVIDERS:-2embed,videasy,vidsrc}
+      # Live TV
+      IPTV_API_URL: ${IPTV_API_URL:-https://iptv-org.github.io/api}
+      TV_COUNTRY: ${TV_COUNTRY:-ID}
+      # Set this only when running more than one replica
+      HLS_PROXY_SECRET: ${HLS_PROXY_SECRET:-}
+      RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-120}
     restart: always
+
+    # Hardening: the app only reads from disk and never writes outside /tmp.
+    read_only: true
+    tmpfs:
+      - /tmp
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+
     healthcheck:
       test:
         [
