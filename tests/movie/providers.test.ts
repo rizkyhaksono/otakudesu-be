@@ -2,13 +2,21 @@ import { describe, expect, test } from "bun:test";
 import { enabledProviders, movieSources, tvSources } from "@/lib/movie/providers";
 
 describe("embed provider registry", () => {
-  test("enables three providers by default", () => {
-    expect(enabledProviders().map((p) => p.id)).toEqual(["2embed", "videasy", "vidsrc"]);
+  test("enables every known provider by default", () => {
+    expect(enabledProviders().map((p) => p.id)).toEqual([
+      "2embed",
+      "videasy",
+      "vidsrc",
+      "vidsrccc",
+      "vidlink",
+      "embedsu",
+      "autoembed",
+    ]);
   });
 
   test("builds movie URLs from a TMDB id", () => {
     const sources = movieSources(27205);
-    expect(sources).toHaveLength(3);
+    expect(sources.length).toBeGreaterThanOrEqual(5);
     expect(sources[0]!.url).toBe("https://www.2embed.cc/embed/27205");
     for (const source of sources) expect(source.url).toContain("27205");
   });

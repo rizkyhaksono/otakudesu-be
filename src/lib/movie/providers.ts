@@ -37,10 +37,45 @@ const REGISTRY: Record<string, EmbedProvider> = {
     movie: (id) => `https://vidsrc.to/embed/movie/${id}`,
     tv: (id, s, e) => `https://vidsrc.to/embed/tv/${id}/${s}/${e}`,
   },
+  // More providers cost nothing here — each is pure URL construction, with no
+  // request at resolve time — and every extra one is another fallback when a
+  // title is missing from the others.
+  vidsrccc: {
+    id: "vidsrccc",
+    name: "VidSrc.cc",
+    movie: (id) => `https://vidsrc.cc/v2/embed/movie/${id}`,
+    tv: (id, s, e) => `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}`,
+  },
+  vidlink: {
+    id: "vidlink",
+    name: "VidLink",
+    movie: (id) => `https://vidlink.pro/movie/${id}`,
+    tv: (id, s, e) => `https://vidlink.pro/tv/${id}/${s}/${e}`,
+  },
+  embedsu: {
+    id: "embedsu",
+    name: "Embed.su",
+    movie: (id) => `https://embed.su/embed/movie/${id}`,
+    tv: (id, s, e) => `https://embed.su/embed/tv/${id}/${s}/${e}`,
+  },
+  autoembed: {
+    id: "autoembed",
+    name: "AutoEmbed",
+    movie: (id) => `https://player.autoembed.cc/embed/movie/${id}`,
+    tv: (id, s, e) => `https://player.autoembed.cc/embed/tv/${id}/${s}/${e}`,
+  },
 };
 
 /** Hosts the frontend must allow in its CSP `frame-src`. */
-export const EMBED_HOSTS = ["www.2embed.cc", "player.videasy.net", "vidsrc.to"];
+export const EMBED_HOSTS = [
+  "www.2embed.cc",
+  "player.videasy.net",
+  "vidsrc.to",
+  "vidsrc.cc",
+  "vidlink.pro",
+  "embed.su",
+  "player.autoembed.cc",
+];
 
 export function enabledProviders(): EmbedProvider[] {
   return getEnabledEmbedProviders()

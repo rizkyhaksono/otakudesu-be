@@ -81,7 +81,45 @@ async function getNonce(baseUrl: string): Promise<string> {
   return nonce;
 }
 
-const mirror = async (content: string): Promise<{ url: string } | null> => {
+/**
+ * Can this URL be shown in an iframe on a site that is not the upstream?
+ *
+ * Several mirrors (desustream.*) publish
+ * `frame-ancestors 'self' https://otakudesu.blog`, which the browser enforces —
+ * embedding them anywhere else yields a blank player no matter what we do. The
+ * check is done here so the UI can offer "open in a new tab" for those instead
+ * of showing a dead frame, and can default to a server that actually works.
+ */
+async function isEmbeddable(target: string): Promise<boolean> {
+  try {
+    const response = await fetch(target, {
+      method: "GET",
+      headers: { "User-Agent": UA, Accept: "text/html,*/*" },
+      redirect: "follow",
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
+    await response.body?.cancel();
+
+    const xfo = response.headers.get("x-frame-options")?.toLowerCase() ?? "";
+    if (xfo.includes("deny") || xfo.includes("sameorigin")) return false;
+
+    const csp = response.headers.get("content-security-policy") ?? "";
+    const directive = /frame-ancestors([^;]*)/i.exec(csp)?.[1]?.toLowerCase();
+    if (!directive) return true;
+
+    // Token-based, not substring: `*.otakudesu.blog` contains "*" but permits
+    // nothing of ours, so only a bare `*` token counts as open.
+    return directive.trim().split(/\s+/).includes("*");
+  } catch {
+    // Unknown means "let the browser try" — better than hiding a working server.
+    return true;
+  }
+}
+
+const mirror = async (
+  content: string,
+): Promise<{ url: string; embeddable: boolean } | null> => {
   const baseUrl = getAnimeBaseUrl();
   const payload = decodeToken(content);
 
@@ -102,8 +140,9 @@ const mirror = async (content: string): Promise<{ url: string } | null> => {
   const html = Buffer.from(encoded, "base64").toString("utf8");
   const src = load(html)("iframe").attr("src");
   const url = safeUrl(src);
+  if (!url) return null;
 
-  return url ? { url } : null;
+  return { url, embeddable: await isEmbeddable(url) };
 };
 
 export default mirror;

@@ -87,7 +87,7 @@ export function getMovieBoxApiUrl(): string | null {
 /** Ordered list of enabled embed providers. */
 export function getEnabledEmbedProviders(): string[] {
   const raw = process.env.MOVIE_EMBED_PROVIDERS?.trim();
-  if (!raw) return ["2embed", "videasy", "vidsrc"];
+  if (!raw) return ["2embed", "videasy", "vidsrc", "vidsrccc", "vidlink", "embedsu", "autoembed"];
   return raw
     .split(",")
     .map((entry) => entry.trim().toLowerCase())
