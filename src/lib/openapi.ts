@@ -220,7 +220,21 @@ const OPERATIONS: Op[] = [
     params: [{ name: "id", in: "path", required: true, description: "radio-browser station UUID" }],
   },
 
-  { path: "/api/v1/news", summary: "Latest anime news headlines", tag: "News" },
+  {
+    path: "/api/v1/news",
+    summary: "Latest anime news headlines",
+    tag: "News",
+    params: [
+      { name: "q", in: "query", description: "Only items about this title, e.g. an anime name" },
+      { name: "limit", in: "query", description: "Maximum items to return" },
+    ],
+  },
+  {
+    path: "/api/v1/news/{id}",
+    summary: "One article, parsed into typed blocks",
+    tag: "News",
+    params: [{ name: "id", in: "path", required: true, description: "Article id from the listing" }],
+  },
 ];
 
 export function operations() {

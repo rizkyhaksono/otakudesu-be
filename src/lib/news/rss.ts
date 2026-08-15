@@ -25,6 +25,25 @@ function toIso(value: string | null): string | null {
   return Number.isNaN(date.getTime()) ? null : date.toISOString();
 }
 
+/**
+ * A short, URL-safe id.
+ *
+ * The guid looks like `https://www.animenewsnetwork.com/cms/.240605`; the digits
+ * after the dot are the CMS id and make a far better route segment than a
+ * percent-encoded URL. Anything unexpected falls back to a hash of the link so
+ * an id is always present and always stable.
+ */
+function articleId(guid: string | null, link: string): string {
+  const cms = /\.(\d{4,})\s*$/.exec(guid ?? "") ?? /\.(\d{4,})\s*$/.exec(link);
+  if (cms?.[1]) return cms[1];
+
+  let hash = 0;
+  for (let index = 0; index < link.length; index++) {
+    hash = (Math.imul(31, hash) + link.charCodeAt(index)) | 0;
+  }
+  return `x${(hash >>> 0).toString(36)}`;
+}
+
 export function parseFeed(xml: string, limit = 60): NewsItem[] {
   const items: NewsItem[] = [];
   ITEM.lastIndex = 0;
@@ -39,8 +58,7 @@ export function parseFeed(xml: string, limit = 60): NewsItem[] {
     const published = field(block, "pubDate");
 
     items.push({
-      // The upstream guid is stable; fall back to the link.
-      id: field(block, "guid") ?? link,
+      id: articleId(field(block, "guid"), link),
       title,
       link,
       summary: stripHtml(field(block, "description")) || null,
