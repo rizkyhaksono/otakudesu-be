@@ -2,6 +2,8 @@ export type ComicGenre = {
   name: string;
   slug: string;
   icon: string | null;
+  /** Internal: used to separate curated genres from a bulk keyword import. */
+  created_at?: string | null;
 };
 
 export type ComicChapterRef = {
