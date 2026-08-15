@@ -14,15 +14,22 @@ const asRecord = (v: unknown): Raw => (v && typeof v === "object" ? (v as Raw) :
  * and searchable. This is what makes the comic section as complete as the anime
  * one, rather than just the handful of cards on its home page.
  */
-const comicBrowse = async (options: {
+export type BrowseOptions = {
   page?: number;
   genre?: string;
   search?: string;
-} = {}): Promise<ComicBrowse> => {
+  /** Manga · Manhwa · Manhua. Novels live on their own route. */
+  type?: string;
+  sort?: string;
+};
+
+const comicBrowse = async (options: BrowseOptions = {}): Promise<ComicBrowse> => {
   const url = new URL(`${getComicBaseUrl()}/manga`);
   if (options.page && options.page > 1) url.searchParams.set("page", String(options.page));
   if (options.genre) url.searchParams.set("genre", options.genre);
   if (options.search) url.searchParams.set("search", options.search);
+  if (options.type) url.searchParams.set("type", options.type);
+  if (options.sort) url.searchParams.set("sort", options.sort);
 
   const html = await fetchHtml(url.toString(), { revalidate: options.search ? 300 : 1800 });
   const props = expectComponent(parseInertia(html), "Manga/Index") as Raw;
