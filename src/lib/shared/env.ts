@@ -65,6 +65,18 @@ export function getNewsFeedUrl(): string {
 }
 
 /** ISO 3166-1 alpha-2 country used to filter the live TV index. */
+export function getAnimeChanUrl(): string {
+  return readUrl(["ANIMECHAN_API_URL"], "quotes source", "https://api.animechan.io/v1");
+}
+
+export function getTraceMoeUrl(): string {
+  return readUrl(["TRACEMOE_API_URL"], "scene search source", "https://api.trace.moe");
+}
+
+export function getSiteUrl(): string {
+  return readUrl(["SITE_URL", "NEXT_PUBLIC_SITE_URL"], "public site", "https://otakudesu.natee.my.id");
+}
+
 export function getTvCountry(): string {
   return (process.env.TV_COUNTRY?.trim() || "ID").toUpperCase();
 }

@@ -25,6 +25,16 @@ export const episodeSchema = z.coerce.number().int().min(0).max(100_000);
 
 export const keywordSchema = z.string().trim().min(1).max(100);
 
+/** A remote http(s) URL — used where the URL is passed to a third party
+ *  rather than fetched by this server (e.g. trace.moe's `?url=`). */
+export const urlSchema = z
+  .string()
+  .trim()
+  .min(1)
+  .max(2_000)
+  .url()
+  .refine((value) => /^https?:\/\//i.test(value), "must be http or https");
+
 /** Channel ids in the iptv-org index look like `RCTI.id`. */
 export const channelIdSchema = z
   .string()

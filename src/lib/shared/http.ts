@@ -14,6 +14,9 @@ export type FetchOptions = {
   /** Retries on 5xx / network failure. Defaults to 1 (so 2 attempts total). */
   retries?: number;
   signal?: AbortSignal;
+  /** Defaults to GET. A body only makes sense with POST/PUT. */
+  method?: "GET" | "POST" | "PUT";
+  body?: BodyInit | Uint8Array;
 };
 
 /**
@@ -31,6 +34,8 @@ async function request(url: string, options: FetchOptions = {}): Promise<Respons
     timeoutMs = DEFAULT_TIMEOUT_MS,
     retries = 1,
     signal,
+    method,
+    body,
   } = options;
 
   const init: RequestInit & { next?: { revalidate?: number | false; tags?: string[] } } = {
@@ -40,6 +45,10 @@ async function request(url: string, options: FetchOptions = {}): Promise<Respons
       ...headers,
     },
     redirect: "follow",
+    ...(method ? { method } : {}),
+    // Uint8Array is a valid fetch body at runtime; the DOM lib's BodyInit type
+    // just doesn't say so in this TS configuration.
+    ...(body !== undefined ? { body: body as BodyInit } : {}),
   };
 
   if (revalidate === 0) {

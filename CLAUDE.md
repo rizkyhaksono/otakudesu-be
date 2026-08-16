@@ -28,7 +28,8 @@ rather than failing the service.
 
 ## Architecture
 
-Six domains — anime, comic, movie, live TV, radio, news — behind one API. The layering is strict:
+Eight domains — anime, comic, movie, live TV, radio, news, cross-domain search, and a handful of small
+open-API tools (quotes, reverse image search) — behind one API. The layering is strict:
 
 ```
 src/app/api/v1/<domain>/…   route handlers: validate params, call a util, return via apiHandler
@@ -67,6 +68,16 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
   browser will block on an HTTPS page.
 - **News** is RSS parsed with regex, deliberately: the shape is fixed and shallow, and an XML
   library would be the only one in the project.
+- **Search** (`src/utils/search`) fans one query out to the other domains in parallel and normalizes
+  the results into one shape. Each domain call is individually wrapped so one upstream failing
+  degrades that domain's results, not the whole search.
+- **Tools** (`src/utils/anime/quotes.ts`, `src/utils/anime/identify.ts`) wrap two small, open,
+  unauthenticated third-party APIs — AnimeChan for quotes, trace.moe for reverse image search.
+  Both degrade quietly: a title with no quotes is a normal empty result, not an error.
+- **Route params must be validated *inside* the `apiHandler` callback, not before it.** A `parse()`
+  call made before `apiHandler(() => ...)` throws outside its `try`, which turns bad input into an
+  uncaught 500 instead of the intended 400. This was a real, recurring bug — check new routes
+  against it.
 - **The HLS and radio proxies are the SSRF-sensitive routes.** Neither ever accepts a
   caller-supplied URL: they take a channel or station id, or a URL this server HMAC-signed itself
   while rewriting a manifest. `assertPublicUrl` re-resolves the host and rejects private ranges.

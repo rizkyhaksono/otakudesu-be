@@ -20,6 +20,8 @@ with a single Next.js App Router deployment. Community-built, community-maintain
 | **Live TV** | [iptv-org](https://github.com/iptv-org/iptv) | Indonesian channels, categories, and a CORS-safe HLS proxy |
 | **Radio** | [radio-browser](https://www.radio-browser.info/) | Indonesian stations, tags, and an audio proxy for streams the browser cannot reach |
 | **News** | [Anime News Network](https://www.animenewsnetwork.com/) | Latest anime headlines from the public RSS feed |
+| **Search** | — | Fans out one query to anime, comics, movies/TV and radio in parallel |
+| **Tools** | [AnimeChan](https://github.com/RocktimSaikia/anime-chan) · [trace.moe](https://github.com/soruly/trace.moe) | Anime quotes, and reverse image search — "which anime is this screenshot from" |
 
 Every successful response is `{ data }`. Every failure is `{ error }`. All endpoints are `GET`.
 
@@ -48,6 +50,9 @@ Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently �
 | `IPTV_API_URL` | | `https://iptv-org.github.io/api` | Live TV index |
 | `RADIO_API_URL` | | `https://de1.api.radio-browser.info` | Radio station index |
 | `NEWS_FEED_URL` | | ANN weekly feed | RSS source for the news endpoint |
+| `SITE_URL` | | `https://otakudesu.natee.my.id` | Used to build absolute links, e.g. the schedule `.ics` feed |
+| `ANIMECHAN_API_URL` | | `https://api.animechan.io/v1` | Quote source |
+| `TRACEMOE_API_URL` | | `https://api.trace.moe` | Reverse image search source |
 | `TV_COUNTRY` | | `ID` | ISO country filter for live TV |
 | `MOVIEBOX_API_URL` | | — | Optional extra adapter; disabled when empty |
 | `RATE_LIMIT_PER_MINUTE` | | `120` | Per-IP request budget |

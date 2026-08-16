@@ -7,7 +7,17 @@ export const metadata: Metadata = {
   description: "Every endpoint exposed by the anime, comic, movie and live TV API.",
 };
 
-const TAG_ORDER = ["Meta", "Anime", "Comic", "Movie", "Live TV"] as const;
+const TAG_ORDER = [
+  "Meta",
+  "Search",
+  "Anime",
+  "Comic",
+  "Movie",
+  "Live TV",
+  "Radio",
+  "News",
+  "Tools",
+] as const;
 
 /**
  * Rendered on the server with no client JavaScript and no external assets, so

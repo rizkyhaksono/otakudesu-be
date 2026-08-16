@@ -9,7 +9,7 @@
 type Op = {
   path: string;
   summary: string;
-  tag: "Anime" | "Comic" | "Movie" | "Live TV" | "Radio" | "News" | "Meta";
+  tag: "Anime" | "Comic" | "Movie" | "Live TV" | "Radio" | "News" | "Search" | "Tools" | "Meta";
   params?: { name: string; in: "path" | "query"; required?: boolean; description: string }[];
 };
 
