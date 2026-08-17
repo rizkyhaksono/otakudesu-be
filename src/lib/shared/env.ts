@@ -77,6 +77,10 @@ export function getSiteUrl(): string {
   return readUrl(["SITE_URL", "NEXT_PUBLIC_SITE_URL"], "public site", "https://otakudesu.natee.my.id");
 }
 
+export function getAnimeThemesUrl(): string {
+  return readUrl(["ANIMETHEMES_API_URL"], "theme song source", "https://api.animethemes.moe");
+}
+
 export function getTvCountry(): string {
   return (process.env.TV_COUNTRY?.trim() || "ID").toUpperCase();
 }

@@ -235,6 +235,37 @@ const OPERATIONS: Op[] = [
     tag: "News",
     params: [{ name: "id", in: "path", required: true, description: "Article id from the listing" }],
   },
+
+  {
+    path: "/api/v1/search",
+    summary: "Cross-domain search — anime, comics, movies/TV and radio in one call",
+    tag: "Search",
+    params: [{ name: "q", in: "query", required: true, description: "Search term" }],
+  },
+
+  {
+    path: "/api/v1/anime/schedule.ics",
+    summary: "Weekly release schedule as a subscribable iCalendar feed",
+    tag: "Anime",
+  },
+  {
+    path: "/api/v1/anime/quotes",
+    summary: "A random anime quote, or quotes from one title",
+    tag: "Tools",
+    params: [{ name: "anime", in: "query", description: "Title to find quotes from, e.g. `One Piece`" }],
+  },
+  {
+    path: "/api/v1/anime/identify",
+    summary: "Reverse image search — which anime a screenshot is from (GET by URL, POST an upload)",
+    tag: "Tools",
+    params: [{ name: "url", in: "query", description: "Public image URL (GET only)" }],
+  },
+  {
+    path: "/api/v1/anime/themes",
+    summary: "OP/ED theme songs for a title, matched by name, with direct playable audio",
+    tag: "Tools",
+    params: [{ name: "title", in: "query", required: true, description: "Anime title, e.g. `One Piece`" }],
+  },
 ];
 
 export function operations() {

@@ -21,7 +21,7 @@ with a single Next.js App Router deployment. Community-built, community-maintain
 | **Radio** | [radio-browser](https://www.radio-browser.info/) | Indonesian stations, tags, and an audio proxy for streams the browser cannot reach |
 | **News** | [Anime News Network](https://www.animenewsnetwork.com/) | Latest anime headlines from the public RSS feed |
 | **Search** | — | Fans out one query to anime, comics, movies/TV and radio in parallel |
-| **Tools** | [AnimeChan](https://github.com/RocktimSaikia/anime-chan) · [trace.moe](https://github.com/soruly/trace.moe) | Anime quotes, and reverse image search — "which anime is this screenshot from" |
+| **Tools** | [AnimeChan](https://github.com/RocktimSaikia/anime-chan) · [trace.moe](https://github.com/soruly/trace.moe) · [AnimeThemes.moe](https://animethemes.moe) | Anime quotes, reverse image search ("which anime is this screenshot from"), and OP/ED theme song playlists |
 
 Every successful response is `{ data }`. Every failure is `{ error }`. All endpoints are `GET`.
 
@@ -53,6 +53,7 @@ Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently �
 | `SITE_URL` | | `https://otakudesu.natee.my.id` | Used to build absolute links, e.g. the schedule `.ics` feed |
 | `ANIMECHAN_API_URL` | | `https://api.animechan.io/v1` | Quote source |
 | `TRACEMOE_API_URL` | | `https://api.trace.moe` | Reverse image search source |
+| `ANIMETHEMES_API_URL` | | `https://api.animethemes.moe` | Theme song source |
 | `TV_COUNTRY` | | `ID` | ISO country filter for live TV |
 | `MOVIEBOX_API_URL` | | — | Optional extra adapter; disabled when empty |
 | `RATE_LIMIT_PER_MINUTE` | | `120` | Per-IP request budget |

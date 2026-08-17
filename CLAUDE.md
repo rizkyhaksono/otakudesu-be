@@ -29,7 +29,7 @@ rather than failing the service.
 ## Architecture
 
 Eight domains — anime, comic, movie, live TV, radio, news, cross-domain search, and a handful of small
-open-API tools (quotes, reverse image search) — behind one API. The layering is strict:
+open-API tools (quotes, reverse image search, theme song playlists) — behind one API. The layering is strict:
 
 ```
 src/app/api/v1/<domain>/…   route handlers: validate params, call a util, return via apiHandler
@@ -71,9 +71,15 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
 - **Search** (`src/utils/search`) fans one query out to the other domains in parallel and normalizes
   the results into one shape. Each domain call is individually wrapped so one upstream failing
   degrades that domain's results, not the whole search.
-- **Tools** (`src/utils/anime/quotes.ts`, `src/utils/anime/identify.ts`) wrap two small, open,
-  unauthenticated third-party APIs — AnimeChan for quotes, trace.moe for reverse image search.
-  Both degrade quietly: a title with no quotes is a normal empty result, not an error.
+- **Tools** (`src/utils/anime/quotes.ts`, `src/utils/anime/identify.ts`, `src/utils/anime/themes.ts`)
+  wrap small, open, unauthenticated third-party APIs — AnimeChan for quotes, trace.moe for reverse
+  image search, AnimeThemes.moe for OP/ED songs. All degrade quietly: a title with no quotes, or no
+  confident theme-song match, is a normal empty result, not an error.
+- **`/docs` is a self-hosted Scalar API reference**, not a hand-rolled page. The renderer bundle is
+  vendored at `public/vendor/scalar-standalone.js` rather than pulled from Scalar's CDN — this
+  project treats "no third-party script on our own pages" as a rule that applies to the docs page
+  too. Adding an endpoint means registering it in `src/lib/openapi.ts`'s `OPERATIONS` array; nothing
+  else needs touching for it to show up.
 - **Route params must be validated *inside* the `apiHandler` callback, not before it.** A `parse()`
   call made before `apiHandler(() => ...)` throws outside its `try`, which turns bad input into an
   uncaught 500 instead of the intended 400. This was a real, recurring bug — check new routes

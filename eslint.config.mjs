@@ -4,7 +4,15 @@ import nextTypescript from "eslint-config-next/typescript";
 /** @type {import("eslint").Linter.Config[]} */
 const config = [
   {
-    ignores: [".next/**", "node_modules/**", "out/**", "build/**", "next-env.d.ts"],
+    ignores: [
+      ".next/**",
+      "node_modules/**",
+      "out/**",
+      "build/**",
+      "next-env.d.ts",
+      // Vendored, pre-built third-party bundle — not source we own or wrote.
+      "public/vendor/**",
+    ],
   },
   ...coreWebVitals,
   ...nextTypescript,
