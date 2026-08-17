@@ -28,10 +28,12 @@ jobs:
       - name: Lint
         run: bun run lint
 
-      # Unit tests are fixture-based and never touch the network, so this stays
-      # deterministic even when an upstream site is down.
+      # `bun test` with no arguments discovers every `*.test.ts` file, which
+      # includes `tests/live/` — the opt-in suite that hits real upstreams.
+      # `bun run test` is scoped to the fixture-based directories only, so CI
+      # stays deterministic even when an upstream site is slow or down.
       - name: Test
-        run: bun test
+        run: bun run test
 
       - name: Build
         run: bun run build
