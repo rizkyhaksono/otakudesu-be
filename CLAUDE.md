@@ -75,6 +75,14 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
   wrap small, open, unauthenticated third-party APIs — AnimeChan for quotes, trace.moe for reverse
   image search, AnimeThemes.moe for OP/ED songs. All degrade quietly: a title with no quotes, or no
   confident theme-song match, is a normal empty result, not an error.
+- **Never derive a public URL from `request.url`.** Behind the reverse proxy the standalone server
+  reports its bind address, so the OpenAPI document advertised `https://0.0.0.0:3000` as its server.
+  Use `publicOrigin(request)` (`src/lib/shared/publicOrigin.ts`), which reads `x-forwarded-*`.
+- **Shinigami is a link resolver, not a scraper.** Its content domain sits behind a Cloudflare
+  managed challenge (verified: full browser headers still get a 403 interstitial), the same wall
+  that got idlix dropped. What *is* reachable is `shinigami.to/links.json`, whose **first** entry is
+  always the live domain — that ordering is the contract, not the label text, which is localised
+  prose they may reword.
 - **`/docs` is a self-hosted Scalar API reference**, not a hand-rolled page. The renderer bundle is
   vendored at `public/vendor/scalar-standalone.js` rather than pulled from Scalar's CDN — this
   project treats "no third-party script on our own pages" as a rule that applies to the docs page

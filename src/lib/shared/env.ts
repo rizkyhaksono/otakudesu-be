@@ -81,6 +81,10 @@ export function getAnimeThemesUrl(): string {
   return readUrl(["ANIMETHEMES_API_URL"], "theme song source", "https://api.animethemes.moe");
 }
 
+export function getShinigamiPortalUrl(): string {
+  return readUrl(["SHINIGAMI_PORTAL_URL"], "shinigami portal", "https://shinigami.to");
+}
+
 export function getTvCountry(): string {
   return (process.env.TV_COUNTRY?.trim() || "ID").toUpperCase();
 }

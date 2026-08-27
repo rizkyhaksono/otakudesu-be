@@ -237,6 +237,12 @@ const OPERATIONS: Op[] = [
   },
 
   {
+    path: "/api/v1/comic/shinigami",
+    summary: "Shinigami's current domain, resolved live from their own link portal",
+    tag: "Comic",
+  },
+
+  {
     path: "/api/v1/search",
     summary: "Cross-domain search — anime, comics, movies/TV and radio in one call",
     tag: "Search",
