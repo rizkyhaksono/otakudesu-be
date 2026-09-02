@@ -23,7 +23,7 @@
   "dependencies": {
     "@scalar/nextjs-api-reference": "^0.11.17",
     "cheerio": "^1.2.0",
-    "next": "16.3.2",
+    "next": "16.3.3",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "zod": "^4.5.2"
@@ -34,7 +34,7 @@
     "@types/react": "^19.2.18",
     "@types/react-dom": "^19.2.4",
     "eslint": "9.39.5",
-    "eslint-config-next": "16.3.1",
+    "eslint-config-next": "16.3.3",
     "typescript": "5.9.3"
   }
 }
