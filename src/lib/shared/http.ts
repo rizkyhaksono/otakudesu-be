@@ -81,18 +81,22 @@ async function request(url: string, options: FetchOptions = {}): Promise<Respons
       return response;
     } catch (error) {
       if (error instanceof UpstreamError) throw error;
-      // AbortSignal.timeout rejects with a TimeoutError DOMException.
-      if (error instanceof Error && error.name === "TimeoutError") {
-        lastError = UpstreamError.timeout(url);
-      } else {
-        lastError = error;
-      }
+      lastError = asUpstreamFailure(url, error);
       if (attempt >= retries) break;
     }
   }
 
   if (lastError instanceof UpstreamError) throw lastError;
-  throw new UpstreamError(`Upstream request failed: ${url}`);
+  throw asUpstreamFailure(url, lastError);
+}
+
+function asUpstreamFailure(url: string, error: unknown): UpstreamError {
+  if (error instanceof UpstreamError) return error;
+  // AbortSignal.timeout rejects with TimeoutError; some runtimes surface AbortError.
+  if (error instanceof Error && (error.name === "TimeoutError" || error.name === "AbortError")) {
+    return UpstreamError.timeout(url);
+  }
+  return new UpstreamError(`Upstream request failed: ${url}`);
 }
 
 /** Fetch upstream HTML. */
@@ -104,7 +108,11 @@ export async function fetchHtml(url: string, options: FetchOptions = {}): Promis
       ...options.headers,
     },
   });
-  return response.text();
+  try {
+    return await response.text();
+  } catch (error) {
+    throw asUpstreamFailure(url, error);
+  }
 }
 
 /** Fetch and parse an upstream JSON document. */
@@ -113,7 +121,11 @@ export async function fetchJson<T>(url: string, options: FetchOptions = {}): Pro
     ...options,
     headers: { Accept: "application/json", ...options.headers },
   });
-  return response.json() as Promise<T>;
+  try {
+    return (await response.json()) as T;
+  } catch (error) {
+    throw asUpstreamFailure(url, error);
+  }
 }
 
 /** Escape hatch for callers that need the raw `Response` (e.g. the HLS proxy). */

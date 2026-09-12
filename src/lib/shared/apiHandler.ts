@@ -55,6 +55,12 @@ export function toErrorResponse(error: unknown): NextResponse {
     return errorResponse(error.message, error.status);
   }
 
+  // AbortSignal.timeout from a raw fetch (mirrors, etc.) used to fall through
+  // as a 500, which Cloudflare then branded as an origin Internal Server Error.
+  if (error instanceof Error && (error.name === "TimeoutError" || error.name === "AbortError")) {
+    return errorResponse("Upstream request timed out", 504);
+  }
+
   // Anything unrecognised is a bug on our side: log it, but never leak the
   // stack or upstream internals to the caller.
   console.error("[apiHandler] unhandled error", error);

@@ -24,12 +24,14 @@ services:
       # Set this only when running more than one replica
       HLS_PROXY_SECRET: ${HLS_PROXY_SECRET:-}
       RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-120}
+      TMPDIR: /tmp
     restart: always
 
     # Hardening: the app only reads from disk and never writes outside /tmp.
     read_only: true
     tmpfs:
       - /tmp
+      - /app/.next/cache
     cap_drop:
       - ALL
     security_opt:

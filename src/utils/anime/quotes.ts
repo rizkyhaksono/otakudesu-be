@@ -24,11 +24,17 @@ function mapQuote(raw: RawQuote): AnimeQuote | null {
 }
 
 export const randomQuote = async (): Promise<AnimeQuote | null> => {
-  const raw = await fetchJson<{ data?: RawQuote }>(`${getAnimeChanUrl()}/quotes/random`, {
-    revalidate: 0, // a cached "random" quote would never rotate
-    timeoutMs: 8_000,
-  });
-  return mapQuote(raw.data ?? {});
+  try {
+    const raw = await fetchJson<{ data?: RawQuote }>(`${getAnimeChanUrl()}/quotes/random`, {
+      // Same window as the homepage ISR. Caching "random" is the point: a
+      // quote that changes every five minutes must not dynamize the front page.
+      revalidate: 300,
+      timeoutMs: 8_000,
+    });
+    return mapQuote(raw.data ?? {});
+  } catch {
+    return null;
+  }
 };
 
 /**
