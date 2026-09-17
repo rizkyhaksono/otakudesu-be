@@ -16,6 +16,13 @@ const config = [
   },
   ...coreWebVitals,
   ...nextTypescript,
+  // eslint-config-next sets react.version to "detect", which calls the removed
+  // context.getFilename() under ESLint 10.
+  {
+    settings: {
+      react: { version: "19.2" },
+    },
+  },
   {
     rules: {
       "@typescript-eslint/no-unused-vars": [

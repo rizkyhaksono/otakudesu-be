@@ -5,6 +5,9 @@ updates:
     schedule:
       interval: weekly
     open-pull-requests-limit: 5
+    ignore:
+      - dependency-name: typescript
+        update-types: [version-update:semver-major]
     groups:
       next:
         patterns: ["next", "eslint-config-next", "react", "react-dom", "@types/react*"]
