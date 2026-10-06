@@ -73,7 +73,7 @@ export function mapSummaries(raw: unknown): ComicSummary[] {
 }
 
 export function mapDetail(props: Raw): ComicDetail | null {
-  const manga = asRecord(props.manga);
+  const manga = asRecord(props.manga ?? props.novel ?? props.book);
   const summary = mapSummary(manga);
   if (!summary) return null;
 
@@ -95,7 +95,7 @@ export function mapDetail(props: Raw): ComicDetail | null {
 
 export function mapChapter(props: Raw): ComicChapter | null {
   const chapter = asRecord(props.chapter);
-  const manga = asRecord(props.manga);
+  const manga = asRecord(props.manga ?? props.novel ?? props.book);
 
   const images = asArray(chapter.images)
     .map((entry) => {

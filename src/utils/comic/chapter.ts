@@ -1,3 +1,4 @@
+import { NotFoundError, UpstreamError } from "@/lib/shared/errors";
 import { assertSlug, getComicBaseUrl } from "@/lib/shared/env";
 import { fetchHtml } from "@/lib/shared/http";
 import { expectComponent, parseInertia } from "@/lib/comic/inertia";
@@ -14,11 +15,22 @@ const comicChapter = async (
   chapterNumber: number,
 ): Promise<ComicChapter | null> => {
   const safeSlug = assertSlug(slug, "comic slug");
-  const html = await fetchHtml(
-    `${getComicBaseUrl()}/manga/${safeSlug}/chapter/${chapterNumber}`,
-    { revalidate: 3600 },
-  );
-  const props = expectComponent(parseInertia(html), "Manga/Read") as Record<string, unknown>;
+  const baseUrl = getComicBaseUrl();
+
+  try {
+    const html = await fetchHtml(`${baseUrl}/manga/${safeSlug}/chapter/${chapterNumber}`, {
+      revalidate: 3600,
+    });
+    const props = expectComponent(parseInertia(html), "Manga/Read") as Record<string, unknown>;
+    return mapChapter(props);
+  } catch (error) {
+    if (!(error instanceof NotFoundError || error instanceof UpstreamError)) throw error;
+  }
+
+  const html = await fetchHtml(`${baseUrl}/novel/${safeSlug}/chapter/${chapterNumber}`, {
+    revalidate: 3600,
+  });
+  const props = expectComponent(parseInertia(html), "Novel/Read") as Record<string, unknown>;
   return mapChapter(props);
 };
 

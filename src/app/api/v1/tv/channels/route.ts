@@ -7,7 +7,7 @@ export async function GET(request: Request) {
   const q = params.get("q")?.slice(0, 80) ?? undefined;
 
   return apiHandler(() => tvChannels({ category, q }), {
-    sMaxAge: 21_600,
-    staleWhileRevalidate: 43_200,
+    sMaxAge: 300,
+    staleWhileRevalidate: 600,
   });
 }

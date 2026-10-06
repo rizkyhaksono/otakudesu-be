@@ -5,6 +5,6 @@ import { channelIdSchema, parse } from "@/lib/shared/validate";
 export async function GET(_request: Request, props: { params: Promise<{ id: string }> }) {
   const { id } = await props.params;
   return apiHandler(() => tvChannel(parse(channelIdSchema, id, "channel id")), {
-    sMaxAge: 21_600,
+    sMaxAge: 300,
   });
 }

@@ -146,16 +146,16 @@ async function buildIndex(): Promise<Index> {
 
   const index = { channels, byId: new Map(channels.map((channel) => [channel.id, channel])) };
 
-  // Probe liveness in the background so the first request is not blocked by
-  // ~130 network round-trips. Streams are mutated in place, so once this
-  // settles the dead ones disappear from listings on their own.
-  void verifyStreams(index);
+  // Complete the liveness pass before publishing the index. Otherwise the
+  // first list request can expose a channel whose detail request 404s a few
+  // seconds later when the background probe marks its stream dead.
+  await verifyStreams(index);
 
   return index;
 }
 
-const PROBE_CONCURRENCY = 12;
-const PROBE_TIMEOUT_MS = 6000;
+const PROBE_CONCURRENCY = 32;
+const PROBE_TIMEOUT_MS = 2500;
 
 async function verifyStreams(index: Index): Promise<void> {
   const streams = index.channels.flatMap((channel) => channel.streams);
