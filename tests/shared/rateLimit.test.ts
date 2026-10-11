@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, test } from "bun:test";
-import { __resetRateLimit, checkRateLimit, clientKey } from "@/lib/shared/rateLimit";
+import { __resetRateLimit, checkRateLimit, clientKey, isInternalRequest } from "@/lib/shared/rateLimit";
 
 beforeEach(() => __resetRateLimit());
 
@@ -47,5 +47,24 @@ describe("clientKey", () => {
     expect(clientKey(new Request("https://a.test", { headers: { "x-real-ip": "198.51.100.7" } })))
       .toBe("198.51.100.7");
     expect(clientKey(new Request("https://a.test"))).toBe("unknown");
+  });
+});
+
+describe("isInternalRequest", () => {
+  const withToken = (value?: string) =>
+    new Request("https://api.test/api/v1/comic/home", {
+      headers: value === undefined ? {} : { "x-internal-token": value },
+    });
+
+  test("accepts only the exact configured token", () => {
+    expect(isInternalRequest(withToken("s3cret"), "s3cret")).toBe(true);
+    expect(isInternalRequest(withToken("s3cre"), "s3cret")).toBe(false);
+    expect(isInternalRequest(withToken("wrong!"), "s3cret")).toBe(false);
+    expect(isInternalRequest(withToken(), "s3cret")).toBe(false);
+  });
+
+  test("is off when no token is configured", () => {
+    expect(isInternalRequest(withToken(""), "")).toBe(false);
+    expect(isInternalRequest(withToken("anything"), undefined)).toBe(false);
   });
 });

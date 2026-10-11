@@ -25,6 +25,7 @@ services:
       # Set this only when running more than one replica
       HLS_PROXY_SECRET: ${HLS_PROXY_SECRET:-}
       RATE_LIMIT_PER_MINUTE: ${RATE_LIMIT_PER_MINUTE:-120}
+      INTERNAL_API_TOKEN: ${INTERNAL_API_TOKEN:-}
       TMPDIR: /tmp
     restart: always
 

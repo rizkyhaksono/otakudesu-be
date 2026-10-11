@@ -58,6 +58,7 @@ Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently �
 | `TV_COUNTRY` | | `ID` | ISO country filter for live TV |
 | `MOVIEBOX_API_URL` | | — | Optional extra adapter; disabled when empty |
 | `RATE_LIMIT_PER_MINUTE` | | `120` | Per-IP request budget |
+| `INTERNAL_API_TOKEN` | | — | Shared secret; requests with a matching `x-internal-token` header skip the rate limit. Set the same value on the frontend so its server-side renders are not throttled |
 | `HLS_PROXY_SECRET` | | random per process | Set this only when running multiple replicas |
 
 ## Scripts

@@ -1,3 +1,5 @@
+import { timingSafeEqual } from "node:crypto";
+
 /**
  * In-memory token bucket, keyed by client IP.
  *
@@ -61,6 +63,20 @@ export function checkRateLimit(key: string, now = Date.now()): RateLimitResult {
     retryAfter,
     resetAt: now + retryAfter * 1000,
   };
+}
+
+/**
+ * Our own frontend renders server-side, so every page it builds reaches this
+ * API from one IP. Sharing a public per-IP budget meant a cold cache after a
+ * deploy burned through it and pages rendered empty. It proves itself with a
+ * shared secret instead (`INTERNAL_API_TOKEN`, sent as `x-internal-token`).
+ */
+export function isInternalRequest(request: Request, token = process.env.INTERNAL_API_TOKEN): boolean {
+  const sent = request.headers.get("x-internal-token");
+  if (!token || !sent) return false;
+  const a = Buffer.from(sent);
+  const b = Buffer.from(token);
+  return a.length === b.length && timingSafeEqual(a, b);
 }
 
 /**

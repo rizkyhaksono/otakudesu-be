@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { checkRateLimit, clientKey, rateLimitHeaders } from "@/lib/shared/rateLimit";
+import { checkRateLimit, clientKey, isInternalRequest, rateLimitHeaders } from "@/lib/shared/rateLimit";
 
 /**
  * Renamed from `middleware` in Next.js 16. Runs on the Node.js runtime, in the
@@ -13,6 +13,7 @@ export function proxy(request: NextRequest) {
 
   // Health checks must never be throttled — the container probe depends on it.
   if (pathname === "/api/health") return NextResponse.next();
+  if (isInternalRequest(request)) return NextResponse.next();
 
   const result = checkRateLimit(clientKey(request));
   const headers = rateLimitHeaders(result);
