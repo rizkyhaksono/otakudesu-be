@@ -1,37 +1,24 @@
-import { NotFoundError, UpstreamError } from "@/lib/shared/errors";
-import { assertSlug, getComicBaseUrl } from "@/lib/shared/env";
+import { NotFoundError } from "@/lib/shared/errors";
+import { getComicBaseUrl } from "@/lib/shared/env";
 import { fetchHtml } from "@/lib/shared/http";
-import { expectComponent, parseInertia } from "@/lib/comic/inertia";
-import { mapChapter } from "@/lib/comic/mappers";
+import { buildChapter, parseChapterImages } from "@/lib/comic/komiku";
+import comicDetail from "./detail";
 import type { ComicChapter } from "@/types/comic";
 
 /**
- * Chapters are addressed by `chapter_number`, not by slug — the upstream
- * answers 404 for `/manga/{slug}/chapter-43` but 200 for
- * `/manga/{slug}/chapter/43`.
+ * The public API addresses chapters by `chapter_number`, but Komiku addresses
+ * them by slug (`/black-clover-chapter-392/`), and slugs are not derivable from
+ * the number (`…-chapter-01-1`, `…-chapter-79-2`). Resolve the number against
+ * the detail page's chapter list — already cached — then fetch the reader.
  */
-const comicChapter = async (
-  slug: string,
-  chapterNumber: number,
-): Promise<ComicChapter | null> => {
-  const safeSlug = assertSlug(slug, "comic slug");
+const comicChapter = async (slug: string, chapterNumber: number): Promise<ComicChapter | null> => {
+  const detail = await comicDetail(slug);
+  const ref = detail.chapters.find((chapter) => chapter.chapter_number === chapterNumber);
+  if (!ref?.slug) throw new NotFoundError("Chapter not found");
+
   const baseUrl = getComicBaseUrl();
-
-  try {
-    const html = await fetchHtml(`${baseUrl}/manga/${safeSlug}/chapter/${chapterNumber}`, {
-      revalidate: 3600,
-    });
-    const props = expectComponent(parseInertia(html), "Manga/Read") as Record<string, unknown>;
-    return mapChapter(props);
-  } catch (error) {
-    if (!(error instanceof NotFoundError || error instanceof UpstreamError)) throw error;
-  }
-
-  const html = await fetchHtml(`${baseUrl}/novel/${safeSlug}/chapter/${chapterNumber}`, {
-    revalidate: 3600,
-  });
-  const props = expectComponent(parseInertia(html), "Novel/Read") as Record<string, unknown>;
-  return mapChapter(props);
+  const html = await fetchHtml(`${baseUrl}/${ref.slug}/`, { revalidate: 3600 });
+  return buildChapter(detail, ref, parseChapterImages(html, baseUrl));
 };
 
 export default comicChapter;

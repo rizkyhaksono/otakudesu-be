@@ -40,9 +40,14 @@ export function getAnimeBaseUrl(): string {
   return readUrl(["ANIME_BASE_URL", "BASEURL"], "anime source");
 }
 
-/** Upstream comic origin (Laravel + Inertia). */
+/** Upstream comic origin (Komiku): home, detail and reader pages. */
 export function getComicBaseUrl(): string {
-  return readUrl(["COMIC_BASE_URL"], "comic source", "https://kiryuuid.net");
+  return readUrl(["COMIC_BASE_URL"], "comic source", "https://komiku.org");
+}
+
+/** Komiku's htmx fragment host, which serves the catalogue, genre and search listings. */
+export function getComicListUrl(): string {
+  return readUrl(["COMIC_LIST_URL"], "comic listings", "https://api.komiku.org");
 }
 
 /** iptv-org API root serving channels.json / streams.json / logos.json. */

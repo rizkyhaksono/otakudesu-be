@@ -15,7 +15,7 @@ with a single Next.js App Router deployment. Community-built, community-maintain
 | Domain | Source | What you get |
 | --- | --- | --- |
 | **Anime** | Otakudesu (scraped) | Ongoing / completed listings, A–Z directory, detail, episodes, batches, genres, schedule, search |
-| **Comic** | Kiryuu ID (Laravel + Inertia JSON) | Listings, detail with full chapter list, and the **reader payload** — ordered page images with prev/next |
+| **Comic** | Komiku (scraped HTML) | Listings, catalogue with genre/type filters and search, detail with full chapter list, and the **reader payload** — ordered page images with prev/next |
 | **Movie & series** | [TMDB](https://www.themoviedb.org/) + embed providers | Metadata, cast, seasons, search, genres, and playable embed sources |
 | **Live TV** | [iptv-org](https://github.com/iptv-org/iptv) | Indonesian channels, categories, and a CORS-safe HLS proxy |
 | **Radio** | [radio-browser](https://www.radio-browser.info/) | Indonesian stations, tags, and an audio proxy for streams the browser cannot reach |
@@ -43,7 +43,8 @@ Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently �
 | Variable | Required | Default | Purpose |
 | --- | --- | --- | --- |
 | `ANIME_BASE_URL` | ✅ | — | Upstream anime site origin (`BASEURL` still works as a legacy alias) |
-| `COMIC_BASE_URL` | | `https://kiryuuid.net` | Upstream comic site origin |
+| `COMIC_BASE_URL` | | `https://komiku.org` | Upstream comic site origin |
+| `COMIC_LIST_URL` | | `https://api.komiku.org` | Komiku listing fragment host (catalogue, genres, search) |
 | `TMDB_ACCESS_TOKEN` | | — | TMDB **v4 API Read Access Token** — themoviedb.org → Settings → API |
 | `TMDB_LANGUAGE` | | `id-ID` | Metadata language |
 | `MOVIE_EMBED_PROVIDERS` | | `2embed,videasy,vidsrc` | Ordered list of enabled embed players |

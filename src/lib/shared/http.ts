@@ -1,4 +1,4 @@
-import { UpstreamError } from "@/lib/shared/errors";
+import { NotFoundError, UpstreamError } from "@/lib/shared/errors";
 
 const DEFAULT_TIMEOUT_MS = 15_000;
 const DEFAULT_UA =
@@ -80,7 +80,8 @@ async function request(url: string, options: FetchOptions = {}): Promise<Respons
 
       return response;
     } catch (error) {
-      if (error instanceof UpstreamError) throw error;
+      // `UpstreamError.failed` maps an upstream 404 to NotFoundError; let it through as-is.
+      if (error instanceof UpstreamError || error instanceof NotFoundError) throw error;
       lastError = asUpstreamFailure(url, error);
       if (attempt >= retries) break;
     }

@@ -95,7 +95,20 @@ const OPERATIONS: Op[] = [
     params: [{ name: "title", in: "query", required: true, description: "Anime title to match" }],
   },
 
-  { path: "/api/v1/comic/home", summary: "Popular, trending and latest comics and novels", tag: "Comic" },
+  { path: "/api/v1/comic/home", summary: "Weekly and daily ranking plus latest comic updates", tag: "Comic" },
+  {
+    path: "/api/v1/comic/browse",
+    summary: "Comic catalogue: filter by genre and type, sort, or search",
+    tag: "Comic",
+    params: [
+      { name: "page", in: "query", description: "Page number" },
+      { name: "genre", in: "query", description: "Genre slug from /comic/genres" },
+      { name: "type", in: "query", description: "Manga, Manhwa or Manhua" },
+      { name: "sort", in: "query", description: "latest (default) or popular" },
+      { name: "q", in: "query", description: "Search term; ignores the filters above" },
+    ],
+  },
+  { path: "/api/v1/comic/genres", summary: "Comic genres", tag: "Comic" },
   {
     path: "/api/v1/comic/{slug}",
     summary: "Comic detail with the full chapter list",

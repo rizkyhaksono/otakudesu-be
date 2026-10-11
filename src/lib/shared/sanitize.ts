@@ -1,9 +1,9 @@
 /**
  * Everything scraped from an upstream site is untrusted input.
  *
- * Some upstreams embed raw HTML in text fields (kiryuuid.net ships `<p>` tags
- * inside novel synopses), so text is stripped here — at the mapper boundary in
- * the backend — rather than in each consumer. That way the public API and every
+ * Some upstreams embed raw HTML in text fields (the old comic source shipped
+ * `<p>` tags inside novel synopses), so text is stripped here — at the mapper
+ * boundary in the backend — rather than in each consumer. That way the public API and every
  * client are protected by the same single fix.
  */
 

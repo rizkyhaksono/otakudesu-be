@@ -25,12 +25,10 @@ partial data:
    ```bash
    curl -sL -A "Mozilla/5.0" "https://<upstream>/<page>" -o tests/fixtures/<name>.html
    ```
-   For the comic upstream, keep only the Inertia root element — the rest of the page is chrome the
-   parser never reads, and full pages bloat the repo.
 
    **Scrub fixtures before committing.** Upstream payloads can contain credentials that do not
-   belong to us — the comic upstream ships its own Google OAuth client id and secret in every
-   page's Inertia props. Redact anything matching `*_secret`, `*_token`, `*_key` or
+   belong to us — a former comic upstream shipped its own Google OAuth client id and secret in
+   every page. Redact anything matching `*_secret`, `*_token`, `*_key` or
    `client_id` before adding a fixture. GitHub push protection will block the push otherwise,
    and rightly so.
 

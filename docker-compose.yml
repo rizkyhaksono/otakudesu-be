@@ -13,7 +13,8 @@ services:
       # Anime (required)
       ANIME_BASE_URL: ${ANIME_BASE_URL:-https://otakudesu.blog}
       # Comic
-      COMIC_BASE_URL: ${COMIC_BASE_URL:-https://kiryuuid.net}
+      COMIC_BASE_URL: ${COMIC_BASE_URL:-https://komiku.org}
+      COMIC_LIST_URL: ${COMIC_LIST_URL:-https://api.komiku.org}
       # Movie — without a token the movie endpoints return empty results
       TMDB_ACCESS_TOKEN: ${TMDB_ACCESS_TOKEN:-}
       TMDB_LANGUAGE: ${TMDB_LANGUAGE:-id-ID}

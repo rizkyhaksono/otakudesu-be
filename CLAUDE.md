@@ -45,8 +45,8 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
   takes `baseUrl` as an argument — that is what makes every one of them testable against a fixture.
 - **`apiHandler` owns the response shape.** Success is `{ data }`, failure is `{ error }`. Never
   build an error response by hand; throw a typed error from `src/lib/shared/errors.ts`.
-- **All upstream text goes through `sanitize.ts`.** Scraped content is untrusted — the comic
-  upstream ships raw `<p>` markup inside novel synopses.
+- **All upstream text goes through `sanitize.ts`.** Scraped content is untrusted — a former comic
+  upstream shipped raw `<p>` markup inside novel synopses.
 - **Validate every route param** with a schema from `src/lib/shared/validate.ts`, so bad input is a
   400 rather than a 500 further down.
 - **Async params**: handlers use `props: { params: Promise<{...}> }` and `await props.params`.
@@ -54,9 +54,12 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
 
 ### Domain specifics
 
-- **Comic** is not scraped with CSS selectors. The upstream is Laravel + Inertia; the whole page
-  state lives in the `data-page` attribute as JSON. Parse that. Chapters are addressed by
-  `chapter_number`, not slug.
+- **Comic** is Komiku, scraped with cheerio (`src/lib/comic/komiku.ts`). Pages come from
+  `komiku.org`; catalogue, genre and search listings are htmx fragments from `api.komiku.org`
+  (`COMIC_LIST_URL`), ten per page with no total. The API addresses chapters by `chapter_number`;
+  the reader resolves that to Komiku's chapter slug through the detail page's chapter list, and
+  takes `prev`/`next` from the same list. No novels — those endpoints return empty lists. Kiryuu
+  was dropped: `kiryuuid.net` and its new domain sit behind a Cloudflare managed challenge.
 - **Movie** uses TMDB for metadata plus a registry of embed providers keyed by TMDB id
   (`src/lib/movie/providers.ts`) — pure URL construction, no scraping. idlix was dropped: the
   domain is gone and every mirror sits behind a Cloudflare managed challenge.

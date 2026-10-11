@@ -1,7 +1,12 @@
-import comicBrowse from "./browse";
+import { getComicBaseUrl } from "@/lib/shared/env";
+import { fetchHtml } from "@/lib/shared/http";
+import { parseGenres } from "@/lib/comic/komiku";
 import type { ComicGenre } from "@/types/comic";
 
-/** The genre list is embedded in every catalogue page, so reuse that request. */
-const comicGenres = async (): Promise<ComicGenre[]> => (await comicBrowse()).genres;
+/** Komiku has no genre index; the filter `<select>` on its home page is the full list. */
+const comicGenres = async (): Promise<ComicGenre[]> => {
+  const html = await fetchHtml(`${getComicBaseUrl()}/`, { revalidate: 86400 });
+  return parseGenres(html);
+};
 
 export default comicGenres;

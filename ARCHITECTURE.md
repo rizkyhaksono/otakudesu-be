@@ -21,19 +21,23 @@ fixture with no setup.
 Inherited from the original service and still healthy. Cheerio selectors are inherently fragile, so
 `bun run test:live` exists to detect breakage before users report it.
 
-### Comic — Kiryuu ID via Inertia props, not CSS selectors
+### Comic — Komiku, scraped HTML
 
-The comic upstream is a Laravel + Inertia.js app. Every page embeds its complete server state as
-HTML-escaped JSON in the root element's `data-page` attribute, so the adapter parses **structured
-JSON** instead of guessing at markup. This survives redesigns that would break a selector-based
-scraper.
+The previous comic source (Kiryuu ID, a Laravel + Inertia app whose `data-page` JSON was parsed
+instead of markup) went behind a Cloudflare **managed challenge** on `kiryuuid.net` and on its new
+domain `v7.kiryuu.to` — the same wall that got idlix dropped. Komiku serves plain HTML with no
+challenge, so it is scraped with cheerio like the anime source (`src/lib/comic/komiku.ts`).
 
-Requesting with the `X-Inertia: true` header (the "official" JSON channel) answers `409` because we
-cannot know the asset version ahead of time, so reading `data-page` from the HTML is the supported
-path.
+Two hosts are involved. `komiku.org` serves the home page, detail pages and the reader;
+`api.komiku.org` (`COMIC_LIST_URL`) serves the catalogue, genre and search listings as bare HTML
+fragments, which the site itself loads over htmx. Listings are ten titles per page with no total
+count, so `last_page` is one page of look-ahead, not a real total.
 
-Chapters are addressed by `chapter_number`, not slug: `/manga/{slug}/chapter/43` returns 200,
-`/manga/{slug}/chapter-43` returns 404.
+Chapters are addressed by `chapter_number` in the public API, but Komiku addresses them by slug
+(`/black-clover-chapter-392/`), and the slug is not derivable from the number (`…-chapter-01-1`,
+`…-chapter-79-2`). The reader resolves the number against the detail page's chapter list — complete
+in the HTML and already cached — and derives `prev` / `next` from the same list. Komiku has no
+novels; the novel endpoints return empty lists.
 
 ### Movie — TMDB, not a scraped streaming site
 
@@ -79,8 +83,8 @@ one after the index is built and hides channels whose streams are all confirmed 
 - **Ports are deliberately unrestricted** in that check. Many regional Indonesian channels serve HLS
   from Wowza on `:1935`; blocking non-standard ports broke real streams without adding protection,
   because reaching an internal service requires a private address, which is already blocked.
-- **XSS.** Upstream text is untrusted and sometimes contains raw HTML — Kiryuu ships `<p>` markup
-  inside novel synopses. `sanitize.ts` strips tags at the mapper boundary so every consumer of the
+- **XSS.** Upstream text is untrusted and sometimes contains raw HTML — the old comic source
+  shipped `<p>` markup inside novel synopses. `sanitize.ts` strips tags at the mapper boundary so every consumer of the
   API is protected by one fix.
 - **Rate limiting** lives in `src/proxy.ts`. Each request fans out to a third party, so an
   unthrottled client can get this server's IP banned upstream.
