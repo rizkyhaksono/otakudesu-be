@@ -3,8 +3,6 @@ import { apiHandler } from "@/lib/shared/apiHandler";
 import { ValidationError } from "@/lib/shared/errors";
 import { urlSchema, parse } from "@/lib/shared/validate";
 
-export const dynamic = "force-dynamic";
-
 /** Reverse image search by a remote image URL — trace.moe fetches it itself. */
 export async function GET(request: Request) {
   const params = new URL(request.url).searchParams;

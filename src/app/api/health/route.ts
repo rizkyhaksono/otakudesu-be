@@ -1,7 +1,4 @@
-import { NextResponse } from "next/server";
 import { getTmdbToken } from "@/lib/shared/env";
-
-export const dynamic = "force-dynamic";
 
 /** Liveness probe used by the Docker healthcheck. Never cached. */
 export async function GET() {
@@ -14,7 +11,7 @@ export async function GET() {
 
   const degraded = Object.values(sources).some((configured) => !configured);
 
-  return NextResponse.json(
+  return Response.json(
     {
       status: degraded ? "degraded" : "ok",
       sources,

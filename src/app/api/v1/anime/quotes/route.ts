@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { quotesFor, randomQuote } from "@/utils/anime/quotes";
 import { apiHandler } from "@/lib/shared/apiHandler";
 import { keywordSchema, parse } from "@/lib/shared/validate";
@@ -17,7 +16,7 @@ export async function GET(request: Request) {
   // `apiHandler` maps `null` to 404 + no-store. A missing quote is normal, not
   // an error, and the homepage must stay cacheable either way.
   const quote = await randomQuote();
-  return NextResponse.json(
+  return Response.json(
     { data: quote },
     {
       status: 200,

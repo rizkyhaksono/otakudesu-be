@@ -7,7 +7,7 @@ src/app/api/v1/<domain>/…   route handlers — thin, validate params, call a u
 src/utils/<domain>/…        I/O layer — fetches upstream, calls a parser
 src/lib/<domain>/…          pure parsers — data in, data out, no network
 src/lib/shared/…            http · env · errors · sanitize · validate · rateLimit · ssrf
-src/proxy.ts                rate limiting (renamed from middleware in Next.js 16)
+src/server.ts               Hono app: headers, rate limiting, legacy aliases, route mounting
 ```
 
 The rule that keeps this maintainable: **parsers never do I/O and never read `process.env`.** They
@@ -86,5 +86,5 @@ one after the index is built and hides channels whose streams are all confirmed 
 - **XSS.** Upstream text is untrusted and sometimes contains raw HTML — the old comic source
   shipped `<p>` markup inside novel synopses. `sanitize.ts` strips tags at the mapper boundary so every consumer of the
   API is protected by one fix.
-- **Rate limiting** lives in `src/proxy.ts`. Each request fans out to a third party, so an
+- **Rate limiting** is middleware in `src/server.ts`. Each request fans out to a third party, so an
   unthrottled client can get this server's IP banned upstream.

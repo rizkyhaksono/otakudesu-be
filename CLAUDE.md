@@ -5,9 +5,9 @@ Guidance for AI agents working in this repository.
 ## Commands
 
 ```bash
-bun run dev         # dev server on :3000
-bun run build       # production build (standalone)
-bun run lint        # eslint flat config  (`next lint` was REMOVED in Next 16)
+bun run dev         # Hono server on :3000, restarts on change
+bun run start       # same, without the watcher (production: `bun src/server.ts`)
+bun run lint        # eslint flat config (typescript-eslint)
 bun run typecheck   # tsc --noEmit
 bun test <dirs>     # unit tests — fixture-based, never touch the network
 bun run test:live   # opt-in suite that hits real upstreams
@@ -15,10 +15,8 @@ bun run test:live   # opt-in suite that hits real upstreams
 
 Package manager is **bun**. There is no `package-lock.json`.
 
-Toolchain note: TypeScript is pinned to 5.9 and ESLint to 9, not the newest releases.
-typescript-eslint does not support TS 7, and `eslint-plugin-react` (pulled in by
-`eslint-config-next`) still calls `context.getFilename()`, removed in ESLint 10. Both were verified
-to break; do not bump them without re-checking.
+There is no build step: Bun runs the TypeScript source directly, in dev and in the Docker image.
+TypeScript is pinned to 5.9 (typescript-eslint does not support TS 7).
 
 ## Environment
 
@@ -32,11 +30,12 @@ Eight domains — anime, comic, movie, live TV, radio, news, cross-domain search
 open-API tools (quotes, reverse image search, theme song playlists) — behind one API. The layering is strict:
 
 ```
+src/server.ts               Hono app: CORS/security headers, rate limit, legacy aliases, /docs,
+                            and auto-mounts every src/app/api/**/route.ts
 src/app/api/v1/<domain>/…   route handlers: validate params, call a util, return via apiHandler
 src/utils/<domain>/…        I/O layer: fetch upstream, hand the body to a parser
 src/lib/<domain>/…          pure parsers: data in, data out
 src/lib/shared/…            http · env · errors · sanitize · validate · rateLimit · ssrf · apiHandler
-src/proxy.ts                per-IP rate limiting (renamed from middleware in Next 16)
 ```
 
 ### Rules that must survive edits
@@ -49,7 +48,12 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
   upstream shipped raw `<p>` markup inside novel synopses.
 - **Validate every route param** with a schema from `src/lib/shared/validate.ts`, so bad input is a
   400 rather than a 500 further down.
-- **Async params**: handlers use `props: { params: Promise<{...}> }` and `await props.params`.
+- **Route files keep the `GET(request, { params })` shape** with `params` as a Promise;
+  `src/server.ts` maps `[slug]` folders to `:slug` and registers literal segments before
+  parameters. A new endpoint is a new `route.ts` file plus an entry in `src/lib/openapi.ts`.
+- **Upstream caching lives in `src/lib/shared/http.ts`.** `revalidate` is seconds in an in-memory
+  LRU (64 MB); concurrent misses share one request and a failed refresh serves the stale copy.
+  `revalidate: 0` means uncached — use it for multi-MB indexes that are memoised in reduced form.
 - **Unit tests never hit the network.** Network checks belong in `tests/live/`.
 
 ### Domain specifics
@@ -78,7 +82,7 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
   wrap small, open, unauthenticated third-party APIs — AnimeChan for quotes, trace.moe for reverse
   image search, AnimeThemes.moe for OP/ED songs. All degrade quietly: a title with no quotes, or no
   confident theme-song match, is a normal empty result, not an error.
-- **Never derive a public URL from `request.url`.** Behind the reverse proxy the standalone server
+- **Never derive a public URL from `request.url`.** Behind the reverse proxy the server
   reports its bind address, so the OpenAPI document advertised `https://0.0.0.0:3000` as its server.
   Use `publicOrigin(request)` (`src/lib/shared/publicOrigin.ts`), which reads `x-forwarded-*`.
 - **Shinigami is a link resolver, not a scraper.** Its content domain sits behind a Cloudflare
@@ -102,20 +106,10 @@ src/proxy.ts                per-IP rate limiting (renamed from middleware in Nex
 
 ## Backwards compatibility
 
-Pre-v1 paths still work via `rewrites()` in `next.config.ts`. Add new endpoints under `/api/v1/`
+Pre-v1 paths still work via the `LEGACY` alias table in `src/server.ts`. Add new endpoints under `/api/v1/`
 and register them in `src/lib/openapi.ts` so they show up at `/docs`.
 
 ## Disclaimer
 
 This is an index/aggregator for third-party sources; it hosts no media. Do not add anything that
 hammers an upstream (no prefetch loops, no unthrottled fan-out).
-
-<!-- BEGIN:nextjs-agent-rules -->
-
-# This is NOT the Next.js you know
-
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
-
-This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
-
-<!-- END:nextjs-agent-rules -->

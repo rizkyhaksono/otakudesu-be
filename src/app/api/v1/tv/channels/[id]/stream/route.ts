@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { getIndex } from "@/lib/tv/iptv";
 import { isManifest, resolveSignedTarget, rewriteManifest } from "@/lib/tv/hlsProxy";
 import { assertPublicUrl } from "@/lib/shared/ssrf";
@@ -6,8 +5,6 @@ import { toErrorResponse } from "@/lib/shared/apiHandler";
 import { NotFoundError, UpstreamError } from "@/lib/shared/errors";
 import { channelIdSchema, parse } from "@/lib/shared/validate";
 import { z } from "zod";
-
-export const dynamic = "force-dynamic";
 
 const streamIndexSchema = z.coerce.number().int().min(0).max(63);
 
@@ -81,7 +78,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
       const body = await upstream.text();
       const rewritten = rewriteManifest(body, upstream.url || target.toString(), channelId, streamIndex);
 
-      return new NextResponse(rewritten, {
+      return new Response(rewritten, {
         status: 200,
         headers: {
           ...corsHeaders,
@@ -91,7 +88,7 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
     }
 
     // Media segments are streamed through untouched so we never buffer them.
-    return new NextResponse(upstream.body, {
+    return new Response(upstream.body, {
       status: upstream.status,
       headers: {
         ...corsHeaders,

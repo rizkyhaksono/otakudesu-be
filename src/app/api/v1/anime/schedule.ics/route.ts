@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import schedule from "@/utils/anime/schedule";
 import { scheduleToIcs } from "@/lib/anime/ics";
 import { getSiteUrl } from "@/lib/shared/env";
@@ -14,7 +13,7 @@ export async function GET() {
     const days = await schedule();
     const ics = scheduleToIcs(days, getSiteUrl());
 
-    return new NextResponse(ics, {
+    return new Response(ics, {
       status: 200,
       headers: {
         "Content-Type": "text/calendar; charset=utf-8",

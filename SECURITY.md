@@ -21,7 +21,7 @@ tokens. The areas most worth your attention:
 | **SSRF** | `src/app/api/v1/tv/channels/[id]/stream` | Callers cannot supply a URL. Manifest-derived URLs are HMAC-signed by the server; `assertPublicUrl` re-resolves the host and rejects private ranges, loopback, link-local and cloud metadata addresses. |
 | **XSS via upstream content** | `src/lib/shared/sanitize.ts` | All scraped text is tag-stripped at the mapper boundary. `url()` rejects `javascript:` and `data:`. |
 | **Path traversal** | `assertSlug`, `src/lib/shared/validate.ts` | Slugs are pattern-matched; `..` and `/` are rejected before any upstream request. |
-| **Abuse / amplification** | `src/proxy.ts` | Per-IP token bucket. Every request fans out to a third party, so this also protects the upstreams. |
+| **Abuse / amplification** | `src/server.ts` (rate-limit middleware) | Per-IP token bucket. Every request fans out to a third party, so this also protects the upstreams. |
 | **Header/response injection** | `src/lib/shared/apiHandler.ts` | Responses are JSON-encoded; upstream error text is never echoed verbatim. |
 
 ### Known, accepted design decisions

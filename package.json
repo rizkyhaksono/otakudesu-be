@@ -5,36 +5,26 @@
   "description": "Community API for anime, comics, movies and Indonesian live TV",
   "license": "MIT",
   "packageManager": "bun@1.4.2",
-  "engines": {
-    "node": ">=20.9.0"
-  },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build && bun run assemble",
-    "start": "node .next/standalone/server.js",
+    "dev": "bun --watch src/server.ts",
+    "start": "bun src/server.ts",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit",
-    "test": "bun test tests/shared tests/anime tests/comic tests/movie tests/tv",
-    "test:live": "bun test tests/live --timeout 30000",
-    "assemble": "cp -R public .next/standalone/ 2>/dev/null || true; mkdir -p .next/standalone/.next && cp -R .next/static .next/standalone/.next/",
-    "start:dev": "next start"
+    "test": "bun test tests/shared tests/anime tests/comic tests/movie tests/tv tests/news tests/server.test.ts",
+    "test:live": "bun test tests/live --timeout 30000"
   },
   "dependencies": {
-    "@scalar/nextjs-api-reference": "^0.11.18",
     "cheerio": "^1.2.0",
-    "next": "16.3.8",
-    "react": "19.3.0",
-    "react-dom": "19.3.0",
+    "hono": "^4.13.13",
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/bun": "^1.4.2",
     "@types/node": "^26.5.1",
-    "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
     "eslint": "10.10.0",
-    "eslint-config-next": "16.3.8",
-    "typescript": "~5.9.3"
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.71.1"
   }
 }

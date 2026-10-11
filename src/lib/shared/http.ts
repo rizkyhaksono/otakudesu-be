@@ -5,10 +5,8 @@ const DEFAULT_UA =
   "Mozilla/5.0 (compatible; otakudesu-be/3.0; +https://github.com/rizkyhaksono/otakudesu-be)";
 
 export type FetchOptions = {
-  /** Seconds to keep the response in the Next.js Data Cache. `0` disables caching. */
+  /** Seconds to keep the response in the in-memory cache. `0`/unset disables caching. */
   revalidate?: number;
-  /** Cache tags for on-demand invalidation. */
-  tags?: string[];
   headers?: Record<string, string>;
   timeoutMs?: number;
   /** Retries on 5xx / network failure. Defaults to 1 (so 2 attempts total). */
@@ -19,17 +17,91 @@ export type FetchOptions = {
   body?: BodyInit | Uint8Array;
 };
 
+type CacheEntry = { body: Uint8Array; status: number; contentType: string; expiresAt: number };
+
+// shortcut: per-process memory, so every replica and restart starts cold; move to Redis if this runs >1 replica.
+const MAX_CACHE_BYTES = 64 * 1024 * 1024;
+const cache = new Map<string, CacheEntry>();
+const inflight = new Map<string, Promise<CacheEntry>>();
+let cacheBytes = 0;
+
+function remember(key: string, entry: CacheEntry) {
+  const previous = cache.get(key);
+  if (previous) {
+    cacheBytes -= previous.body.byteLength;
+    cache.delete(key);
+  }
+  if (entry.body.byteLength > MAX_CACHE_BYTES / 8) return; // one huge document must not flush everything else
+  cache.set(key, entry);
+  cacheBytes += entry.body.byteLength;
+  // Map keeps insertion order, and hits are re-inserted, so the first key is the least recently used.
+  for (const [oldest, value] of cache) {
+    if (cacheBytes <= MAX_CACHE_BYTES) break;
+    cache.delete(oldest);
+    cacheBytes -= value.body.byteLength;
+  }
+}
+
+const toResponse = (entry: CacheEntry) =>
+  new Response(entry.body.slice(), {
+    status: entry.status,
+    headers: { "Content-Type": entry.contentType },
+  });
+
+/** Test hook. */
+export function __resetHttpCache() {
+  cache.clear();
+  inflight.clear();
+  cacheBytes = 0;
+}
+
 /**
- * Single I/O boundary for the whole API.
+ * Single I/O boundary for the whole API, and its cache.
  *
- * Native `fetch` rather than axios on purpose: Next.js only applies its Data
- * Cache and `revalidate` semantics to `fetch`, so this is what makes upstream
- * responses cacheable at all.
+ * GETs with `revalidate > 0` are cached in memory for that many seconds.
+ * Concurrent misses for one URL share a single upstream request, and when a
+ * refresh fails the expired copy is served instead — an upstream outage then
+ * degrades to slightly old data rather than an error.
  */
 async function request(url: string, options: FetchOptions = {}): Promise<Response> {
+  const { revalidate, method } = options;
+  if (!revalidate || revalidate <= 0 || (method && method !== "GET")) return send(url, options);
+
+  const hit = cache.get(url);
+  if (hit && hit.expiresAt > Date.now()) {
+    remember(url, hit);
+    return toResponse(hit);
+  }
+
+  let pending = inflight.get(url);
+  if (!pending) {
+    pending = send(url, options)
+      .then(async (response) => {
+        const entry: CacheEntry = {
+          body: new Uint8Array(await response.arrayBuffer()),
+          status: response.status,
+          contentType: response.headers.get("content-type") ?? "application/octet-stream",
+          expiresAt: Date.now() + revalidate * 1000,
+        };
+        remember(url, entry);
+        return entry;
+      })
+      .finally(() => inflight.delete(url));
+    inflight.set(url, pending);
+  }
+
+  try {
+    return toResponse(await pending);
+  } catch (error) {
+    // A real 404 means the page is gone; anything else falls back to the stale copy.
+    if (hit && !(error instanceof NotFoundError)) return toResponse(hit);
+    throw error;
+  }
+}
+
+async function send(url: string, options: FetchOptions): Promise<Response> {
   const {
     revalidate,
-    tags,
     headers = {},
     timeoutMs = DEFAULT_TIMEOUT_MS,
     retries = 1,
@@ -38,7 +110,7 @@ async function request(url: string, options: FetchOptions = {}): Promise<Respons
     body,
   } = options;
 
-  const init: RequestInit & { next?: { revalidate?: number | false; tags?: string[] } } = {
+  const init: RequestInit = {
     headers: {
       "User-Agent": DEFAULT_UA,
       "Accept-Language": "id-ID,id;q=0.9,en;q=0.8",
@@ -51,13 +123,7 @@ async function request(url: string, options: FetchOptions = {}): Promise<Respons
     ...(body !== undefined ? { body: body as BodyInit } : {}),
   };
 
-  if (revalidate === 0) {
-    init.cache = "no-store";
-  } else if (revalidate !== undefined || tags?.length) {
-    init.next = {};
-    if (revalidate !== undefined) init.next.revalidate = revalidate;
-    if (tags?.length) init.next.tags = tags;
-  }
+  if (revalidate === 0) init.cache = "no-store";
 
   let lastError: unknown;
 

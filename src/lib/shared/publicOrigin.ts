@@ -1,8 +1,8 @@
 /**
  * The origin a client actually reached us on.
  *
- * `new URL(request.url).origin` is wrong behind a reverse proxy: the standalone
- * server binds to `0.0.0.0:3000`, so that is literally what it reports, and the
+ * `new URL(request.url).origin` is wrong behind a reverse proxy: the server
+ * binds to `0.0.0.0:3000`, so that is literally what it reports, and the
  * OpenAPI document ended up advertising `https://0.0.0.0:3000` as its server —
  * every "try it" button in the docs pointed at an unreachable address.
  *

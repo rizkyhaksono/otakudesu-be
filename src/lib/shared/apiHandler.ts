@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { ConfigError, NotFoundError, UpstreamError, ValidationError } from "@/lib/shared/errors";
 
 export type ApiHandlerOptions = {
@@ -21,7 +20,7 @@ const DEFAULT_SWR = 600;
 export async function apiHandler<T>(
   fn: () => Promise<T>,
   options: ApiHandlerOptions = {},
-): Promise<NextResponse> {
+): Promise<Response> {
   const { sMaxAge = DEFAULT_S_MAXAGE, staleWhileRevalidate = DEFAULT_SWR } = options;
 
   try {
@@ -31,7 +30,7 @@ export async function apiHandler<T>(
       return errorResponse("Not Found", 404);
     }
 
-    return NextResponse.json(
+    return Response.json(
       { data },
       {
         status: 200,
@@ -45,7 +44,7 @@ export async function apiHandler<T>(
   }
 }
 
-export function toErrorResponse(error: unknown): NextResponse {
+export function toErrorResponse(error: unknown): Response {
   if (
     error instanceof ValidationError ||
     error instanceof NotFoundError ||
@@ -67,8 +66,8 @@ export function toErrorResponse(error: unknown): NextResponse {
   return errorResponse("Internal Server Error", 500);
 }
 
-function errorResponse(message: string, status: number): NextResponse {
-  return NextResponse.json(
+function errorResponse(message: string, status: number): Response {
+  return Response.json(
     { error: message },
     {
       status,

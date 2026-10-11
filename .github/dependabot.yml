@@ -9,8 +9,6 @@ updates:
       - dependency-name: typescript
         update-types: [version-update:semver-major]
     groups:
-      next:
-        patterns: ["next", "eslint-config-next", "react", "react-dom", "@types/react*"]
       dev:
         dependency-type: development
 

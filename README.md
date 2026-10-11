@@ -3,12 +3,12 @@
 [![CI](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/ci.yml/badge.svg)](https://github.com/rizkyhaksono/otakudesu-be/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Bun](https://img.shields.io/badge/runtime-bun%201.3-black)](https://bun.sh)
-[![Next.js](https://img.shields.io/badge/next.js-16-black)](https://nextjs.org)
+[![Hono](https://img.shields.io/badge/hono-4-black)](https://hono.dev)
 
 One read-only public API for **anime**, **comics**, **movies & series**, and **Indonesian live TV**.
 
 This service replaces three separate backends (`otakudesu-be`, `nateegami-api`, `nateeflix-api`)
-with a single Next.js App Router deployment. Community-built, community-maintained, MIT licensed.
+as a single Hono server on Bun. Community-built, community-maintained, MIT licensed.
 
 ## What it serves
 
@@ -64,9 +64,8 @@ Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently �
 ## Scripts
 
 ```bash
-bun run dev         # dev server
-bun run build       # production build (standalone output)
-bun run start       # run the build
+bun run dev         # dev server with watch
+bun run start       # run the server (no build step: Bun runs the TypeScript directly)
 bun run lint        # eslint (flat config)
 bun run typecheck   # tsc --noEmit
 bun test            # unit tests — fixture-based, no network
@@ -75,18 +74,18 @@ bun run test:live   # opt-in suite that hits the real upstreams
 
 ## Architecture in one paragraph
 
-`src/lib/shared/` is the only I/O boundary: `http.ts` wraps native `fetch` (not axios — Next.js
-only applies its Data Cache to `fetch`), `env.ts` validates configuration, `sanitize.ts` strips
+`src/lib/shared/` is the only I/O boundary: `http.ts` wraps native `fetch` and owns the
+upstream cache (in-memory TTL + LRU, with stale fallback when a refresh fails), `env.ts` validates configuration, `sanitize.ts` strips
 HTML out of everything scraped, and `apiHandler.ts` is the single place that maps a domain function
 to an HTTP response. Each domain then has pure parsers in `src/lib/<domain>/`, an I/O layer in
-`src/utils/<domain>/`, and thin route handlers in `src/app/api/v1/<domain>/`. See
+`src/utils/<domain>/`, and thin route handlers in `src/app/api/v1/<domain>/`, which `src/server.ts` mounts on Hono. See
 [ARCHITECTURE.md](ARCHITECTURE.md) for why each source was chosen.
 
 ## Backwards compatibility
 
 The pre-v1 paths (`/api/home`, `/api/anime/:slug`, `/api/ongoing-anime/:page`, …) still work.
-They are mapped onto `/api/v1/anime/*` by `rewrites()` in `next.config.ts` — rewrites, not
-redirects, so existing consumers need no changes.
+They are mapped onto `/api/v1/anime/*` by the `LEGACY` table in `src/server.ts` — internal
+re-dispatch, not redirects, so existing consumers need no changes.
 
 ## Contributing
 

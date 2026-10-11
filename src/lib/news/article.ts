@@ -21,7 +21,7 @@ function extractDiv(html: string, className: string): string | null {
   if (!match) return null;
 
   let depth = 1;
-  let index = match.index + match[0].length;
+  const index = match.index + match[0].length;
   const start = index;
   const tag = /<\/?div\b[^>]*>/gi;
   tag.lastIndex = index;
@@ -30,7 +30,6 @@ function extractDiv(html: string, className: string): string | null {
   while ((token = tag.exec(html)) !== null) {
     depth += token[0].startsWith("</") ? -1 : 1;
     if (depth === 0) return html.slice(start, token.index);
-    index = tag.lastIndex;
   }
 
   return html.slice(start);

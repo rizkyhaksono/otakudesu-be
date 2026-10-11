@@ -4,6 +4,6 @@ import { keywordSchema, parse } from "@/lib/shared/validate";
 
 export async function GET(_request: Request, props: { params: Promise<{ keyword: string }> }) {
   const { keyword } = await props.params;
-  const decoded = decodeURIComponent(keyword);
-  return apiHandler(() => search(parse(keywordSchema, decoded, "keyword")), { sMaxAge: 300 });
+  // Hono hands params over already decoded; decoding again would throw on a literal "%".
+  return apiHandler(() => search(parse(keywordSchema, keyword, "keyword")), { sMaxAge: 300 });
 }

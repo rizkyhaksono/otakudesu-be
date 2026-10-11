@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server";
 import { getRadioIndex } from "@/lib/radio/browser";
 import { isManifest } from "@/lib/tv/hlsProxy";
 import { assertPublicUrl } from "@/lib/shared/ssrf";
@@ -6,8 +5,6 @@ import { toErrorResponse } from "@/lib/shared/apiHandler";
 import { NotFoundError, UpstreamError } from "@/lib/shared/errors";
 import { parse } from "@/lib/shared/validate";
 import { z } from "zod";
-
-export const dynamic = "force-dynamic";
 
 const idSchema = z.string().trim().uuid();
 
@@ -90,13 +87,13 @@ export async function GET(request: Request, props: { params: Promise<{ id: strin
 
     if (isManifest(contentType, target.toString())) {
       const body = await upstream.text();
-      return new NextResponse(absolutizeManifest(body, upstream.url || target.toString()), {
+      return new Response(absolutizeManifest(body, upstream.url || target.toString()), {
         status: 200,
         headers: { ...corsHeaders, "Content-Type": "application/vnd.apple.mpegurl" },
       });
     }
 
-    return new NextResponse(upstream.body, {
+    return new Response(upstream.body, {
       status: upstream.status,
       headers: { ...corsHeaders, "Content-Type": contentType ?? "audio/mpeg" },
     });

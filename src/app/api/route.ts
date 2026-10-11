@@ -1,7 +1,6 @@
-import { NextResponse } from "next/server";
 
 export async function GET() {
-  return NextResponse.json({
+  return Response.json({
     data: {
       name: "otakudesu-be",
       description: "Community API for anime, comics, movies and Indonesian live TV",
