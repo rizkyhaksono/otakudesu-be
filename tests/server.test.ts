@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { __resetRateLimit } from "@/lib/shared/rateLimit";
-import { app, byPrecedence, routePath } from "@/server";
+import server, { app, byPrecedence, routePath } from "@/server";
 
 // Every request here stays inside the process: routes either need no upstream
 // or fail validation before reaching one.
@@ -63,6 +63,13 @@ describe("server", () => {
     const internal = await get("/api", { ...client, "x-internal-token": "test-token" });
     expect(internal.status).toBe(200);
     delete process.env.INTERNAL_API_TOKEN;
+  });
+});
+
+describe("Bun.serve options", () => {
+  // Bun's default 10s idle timeout cut off slow upstream fetches mid-request.
+  test("slow upstream requests are not cut off by Bun's 10s default", () => {
+    expect(server.idleTimeout).toBeGreaterThanOrEqual(120);
   });
 });
 

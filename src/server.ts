@@ -166,5 +166,8 @@ export default {
   hostname: "0.0.0.0",
   // trace.moe uploads are capped at 10MB; refuse anything larger before reading it.
   maxRequestBodySize: 10 * 1024 * 1024,
+  // Bun drops a request after 10s idle by default; a cold TV index build or a
+  // retried upstream takes longer. 255 is Bun's maximum.
+  idleTimeout: 255,
   fetch: app.fetch,
 };
