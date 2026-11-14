@@ -91,7 +91,7 @@ async function buildIndex(): Promise<Index> {
     if (!streamUrl) continue;
 
     const user_agent = text(stream.user_agent);
-    const referrer = text(stream.referrer);
+    const referrer = normalizeReferrer(text(stream.referrer));
 
     const list = streamsByChannel.get(channelId) ?? [];
     list.push({
@@ -180,6 +180,21 @@ async function verifyStreams(index: Index): Promise<void> {
 function qualityRank(quality: string | null): number {
   const parsed = num(quality);
   return parsed ?? 0;
+}
+
+/**
+ * iptv-org stores some referrers without a scheme ("salamtelevisi.com",
+ * "dens.tv/tv-local"). The proxy derives an Origin header from it, so a bare
+ * host must become a full URL; anything that still does not parse is dropped.
+ */
+export function normalizeReferrer(value: string | null): string | null {
+  if (!value) return null;
+  const candidate = /^https?:\/\//i.test(value) ? value : `https://${value}`;
+  try {
+    return new URL(candidate).toString();
+  } catch {
+    return null;
+  }
 }
 
 /** Test seam. */
