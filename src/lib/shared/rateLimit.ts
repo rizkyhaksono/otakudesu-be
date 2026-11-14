@@ -29,8 +29,14 @@ export type RateLimitResult = {
   resetAt: number;
 };
 
-export function checkRateLimit(key: string, now = Date.now()): RateLimitResult {
-  const refillRate = MAX_REQUESTS / WINDOW_MS;
+/**
+ * Live playback polls a playlist and pulls a segment every few seconds, so a
+ * single viewer of the stream proxies would exhaust the general budget.
+ */
+export const STREAM_MAX_REQUESTS = Number(process.env.STREAM_RATE_LIMIT_PER_MINUTE ?? 900);
+
+export function checkRateLimit(key: string, now = Date.now(), limit = MAX_REQUESTS): RateLimitResult {
+  const refillRate = limit / WINDOW_MS;
   let bucket = buckets.get(key);
 
   if (!bucket) {
@@ -39,10 +45,10 @@ export function checkRateLimit(key: string, now = Date.now()): RateLimitResult {
       const oldest = buckets.keys().next();
       if (!oldest.done) buckets.delete(oldest.value);
     }
-    bucket = { tokens: MAX_REQUESTS, updatedAt: now };
+    bucket = { tokens: limit, updatedAt: now };
   } else {
     const elapsed = now - bucket.updatedAt;
-    bucket.tokens = Math.min(MAX_REQUESTS, bucket.tokens + elapsed * refillRate);
+    bucket.tokens = Math.min(limit, bucket.tokens + elapsed * refillRate);
     bucket.updatedAt = now;
     // Refresh insertion order so active clients are not evicted first.
     buckets.delete(key);
@@ -58,7 +64,7 @@ export function checkRateLimit(key: string, now = Date.now()): RateLimitResult {
 
   return {
     allowed,
-    limit: MAX_REQUESTS,
+    limit,
     remaining: Math.max(0, Math.floor(bucket.tokens)),
     retryAfter,
     resetAt: now + retryAfter * 1000,

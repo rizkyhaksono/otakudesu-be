@@ -66,6 +66,22 @@ describe("server", () => {
   });
 });
 
+describe("stream proxy rate limit", () => {
+  test("a live player's polling does not hit the general 120/min budget", async () => {
+    __resetRateLimit();
+    const client = { "x-forwarded-for": "198.51.100.77" };
+    // An invalid id fails validation without touching the network; the rate
+    // limiter still counts it, which is all this checks.
+    let limited = 0;
+    for (let i = 0; i < 300; i++) {
+      if ((await get("/api/v1/tv/channels/bad%20id!/stream", client)).status === 429) limited++;
+    }
+    expect(limited).toBe(0);
+    // The general bucket for the same client is untouched by stream traffic.
+    expect((await get("/api", client)).status).toBe(200);
+  });
+});
+
 describe("Bun.serve options", () => {
   // Bun's default 10s idle timeout cut off slow upstream fetches mid-request.
   test("slow upstream requests are not cut off by Bun's 10s default", () => {

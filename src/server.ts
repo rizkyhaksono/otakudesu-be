@@ -1,6 +1,12 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/bun";
-import { checkRateLimit, clientKey, isInternalRequest, rateLimitHeaders } from "@/lib/shared/rateLimit";
+import {
+  checkRateLimit,
+  clientKey,
+  isInternalRequest,
+  rateLimitHeaders,
+  STREAM_MAX_REQUESTS,
+} from "@/lib/shared/rateLimit";
 
 /**
  * The HTTP server: Hono on Bun.
@@ -70,7 +76,12 @@ for (const [source, target] of LEGACY) {
 app.use("/api/*", async (c, next) => {
   if (c.req.path === "/api/health" || isInternalRequest(c.req.raw)) return next();
 
-  const result = checkRateLimit(clientKey(c.req.raw));
+  // Stream proxies get their own, larger bucket: a live player polls constantly.
+  const isStream = /^\/api\/v1\/(tv\/channels|radio\/stations)\/[^/]+\/stream$/.test(c.req.path);
+  const key = clientKey(c.req.raw);
+  const result = isStream
+    ? checkRateLimit(`stream:${key}`, Date.now(), STREAM_MAX_REQUESTS)
+    : checkRateLimit(key);
   const headers = rateLimitHeaders(result);
   if (!result.allowed) {
     return Response.json(

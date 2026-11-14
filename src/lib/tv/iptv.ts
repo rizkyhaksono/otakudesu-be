@@ -2,6 +2,7 @@ import { getIptvApiUrl, getTvCountry } from "@/lib/shared/env";
 import { fetchJson } from "@/lib/shared/http";
 import { num, text, url as safeUrl } from "@/lib/shared/sanitize";
 import type { TvChannel, TvStream } from "@/types/tv";
+import { probeStream } from "@/lib/tv/probe";
 
 /**
  * Live TV index built from the iptv-org open dataset — public JSON, no scraping.
@@ -153,7 +154,6 @@ async function buildIndex(): Promise<Index> {
 }
 
 const PROBE_CONCURRENCY = 32;
-const PROBE_TIMEOUT_MS = 2500;
 
 async function verifyStreams(index: Index): Promise<void> {
   const streams = index.channels.flatMap((channel) => channel.streams);
@@ -163,7 +163,7 @@ async function verifyStreams(index: Index): Promise<void> {
     while (cursor < streams.length) {
       const stream = streams[cursor++];
       if (!stream) return;
-      stream.alive = await probe(stream);
+      stream.alive = await probeStream(stream);
     }
   };
 
@@ -173,30 +173,6 @@ async function verifyStreams(index: Index): Promise<void> {
     );
   } catch {
     // A failed sweep just leaves streams unverified; listings stay unfiltered.
-  }
-}
-
-async function probe(stream: TvStream): Promise<boolean> {
-  const headers: Record<string, string> = {
-    "User-Agent":
-      stream.user_agent ??
-      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36",
-    Accept: "*/*",
-  };
-  if (stream.referrer) headers.Referer = stream.referrer;
-
-  try {
-    const response = await fetch(stream.url, {
-      headers,
-      redirect: "follow",
-      cache: "no-store",
-      signal: AbortSignal.timeout(PROBE_TIMEOUT_MS),
-    });
-    // Drain so the socket is released promptly.
-    await response.body?.cancel();
-    return response.ok;
-  } catch {
-    return false;
   }
 }
 
