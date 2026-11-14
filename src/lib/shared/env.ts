@@ -86,6 +86,11 @@ export function getAnimeThemesUrl(): string {
   return readUrl(["ANIMETHEMES_API_URL"], "theme song source", "https://api.animethemes.moe");
 }
 
+/** AniList's public GraphQL endpoint: official trailer ids. */
+export function getAniListApiUrl(): string {
+  return readUrl(["ANILIST_API_URL"], "trailer source", "https://graphql.anilist.co");
+}
+
 export function getShinigamiPortalUrl(): string {
   return readUrl(["SHINIGAMI_PORTAL_URL"], "shinigami portal", "https://shinigami.to");
 }

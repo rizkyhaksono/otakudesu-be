@@ -120,6 +120,29 @@ function parsePlaylists(html: string): MusePlaylist[] {
   return [...out.values()];
 }
 
+/**
+ * Coverage of the query's words in the candidate name, penalized for extra
+ * words the candidate has that the query didn't ask for.
+ *
+ * Coverage alone is not enough: searching "One Piece" also matches "ONE PIECE
+ * HEROINES", a one-off special with no theme songs, and coverage treats it as
+ * as good a match as the real series because both of the query's words are
+ * present. The penalty is what ranks the plain, unqualified title above a
+ * spin-off — it is usually what the query actually meant.
+ */
+export function matchScore(query: string, candidate: string): number {
+  const wanted = tokenize(query);
+  if (wanted.size === 0) return 0;
+
+  const found = tokenize(candidate);
+  let hits = 0;
+  for (const word of wanted) if (found.has(word)) hits++;
+
+  const coverage = hits / wanted.size;
+  const extraWords = Math.max(0, found.size - hits);
+  return coverage - extraWords * 0.15;
+}
+
 export function getMuseIndex(): Promise<MusePlaylist[]> {
   const now = Date.now();
   if (cached && now - cached.at < TTL_MS) return cached.value;

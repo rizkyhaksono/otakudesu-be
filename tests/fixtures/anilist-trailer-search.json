@@ -1,0 +1,54 @@
+{
+ "data": {
+  "Page": {
+   "media": [
+    {
+     "title": {
+      "romaji": "Sousou no Frieren 2nd Season",
+      "english": "Frieren: Beyond Journey’s End Season 2"
+     },
+     "synonyms": [
+      "Провожающая в последний путь Фрирен 2",
+      "장송의 프리렌 2기"
+     ],
+     "trailer": {
+      "id": "RH-FcW94z00",
+      "site": "youtube"
+     }
+    },
+    {
+     "title": {
+      "romaji": "Sousou no Frieren: ●● no Mahou Part 3",
+      "english": null
+     },
+     "synonyms": [
+      "Sousou no Frieren 2nd Season Mini Anime",
+      "Frieren: Beyond Journey’s End Season 2 Mini Anime",
+      "Sousou no Frieren: Marumaru no Mahou"
+     ],
+     "trailer": {
+      "id": "WTUkzIG8ZeE",
+      "site": "youtube"
+     }
+    },
+    {
+     "title": {
+      "romaji": "Sousou no Frieren: ●● no Mahou Part 2",
+      "english": null
+     },
+     "synonyms": [
+      "Sousou no Frieren Mini Anime",
+      "Frieren: Beyond Journey’s End Mini Anime",
+      "Sousou no Frieren: Marumaru no Mahou",
+      "葬送のフリーレン ミニアニメ",
+      "Frieren: Beyond Journey's End: Magic of ??"
+     ],
+     "trailer": {
+      "id": "VNGnINmsrF8",
+      "site": "youtube"
+     }
+    }
+   ]
+  }
+ }
+}

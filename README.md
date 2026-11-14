@@ -55,6 +55,7 @@ Only `ANIME_BASE_URL` is strictly required. Each domain degrades independently â
 | `ANIMECHAN_API_URL` | | `https://api.animechan.io/v1` | Quote source |
 | `TRACEMOE_API_URL` | | `https://api.trace.moe` | Reverse image search source |
 | `ANIMETHEMES_API_URL` | | `https://api.animethemes.moe` | Theme song source |
+| `ANILIST_API_URL` | | `https://graphql.anilist.co` | Trailer source (AniList GraphQL) |
 | `TV_COUNTRY` | | `ID` | ISO country filter for live TV |
 | `MOVIEBOX_API_URL` | | â€” | Optional extra adapter; disabled when empty |
 | `RATE_LIMIT_PER_MINUTE` | | `120` | Per-IP request budget |

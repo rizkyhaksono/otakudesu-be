@@ -285,6 +285,12 @@ const OPERATIONS: Op[] = [
     tag: "Tools",
     params: [{ name: "title", in: "query", required: true, description: "Anime title, e.g. `One Piece`" }],
   },
+  {
+    path: "/api/v1/anime/trailer",
+    summary: "Official YouTube trailer id for a title, matched by name via AniList",
+    tag: "Tools",
+    params: [{ name: "title", in: "query", required: true, description: "Anime title, e.g. `One Piece`" }],
+  },
 ];
 
 export function operations() {
